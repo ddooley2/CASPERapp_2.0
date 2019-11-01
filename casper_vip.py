@@ -18,6 +18,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         #--------------button connections--------------------
         self.back_button.clicked.connect(self.go_back)
         self.browse_for_excel_button.clicked.connect(self.browse_csv)
+        self.analyze_button.clicked.connect(self.parse_csv)
         #--------------End button connections----------------
 
     """
@@ -52,5 +53,23 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         # set the file name if it isn't empty
         if (myFile[0] != ""):
             self.excel_label.setText(myFile[0])
+
+    """
+        parse_csv: this function will parse the csv file chosen for analysis
+    """
+    def parse_csv(self):
+        # check to make sure they actually have a csv file search
+        if self.excel_label.text() == 'Please browse for a CSV file' or self.excel_label.text() == "":
+            QtWidgets.QMessageBox.question(self, "Nothing to analyze!",
+                                           "Please choose a CSV file to analyze",
+                                           QtWidgets.QMessageBox.Ok)
+            return
+
+        try:
+            fp = open(self.excel_label.text())
+            file_data = fp.read()
+            print(file_data)
+        except:
+            print('some error occured')
 
 

@@ -58,7 +58,7 @@
      <rect>
       <x>180</x>
       <y>60</y>
-      <width>241</width>
+      <width>1001</width>
       <height>16</height>
      </rect>
     </property>
@@ -66,7 +66,7 @@
      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please click the &amp;quot;Choose CSV File&amp;quot; button to browse for a CSV file to use.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
-     <string>Pleas browse for an excel file</string>
+     <string>Please browse for a CSV file</string>
     </property>
    </widget>
    <widget class="QPushButton" name="back_button">
@@ -78,8 +78,27 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go back to the main window&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
      <string>Go Back</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="analyze_button">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>140</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Analyze the CSV file chosen&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>Analyze</string>
     </property>
    </widget>
   </widget>
