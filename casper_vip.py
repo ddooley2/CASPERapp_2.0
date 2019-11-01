@@ -21,6 +21,10 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.analyze_button.clicked.connect(self.parse_csv)
         #--------------End button connections----------------
 
+        #------------variables-------------------------------
+        self.seq_data = dict()
+        #------------end variables---------------------------
+
     """
         launch: this launches the window. For now it just shows the window
     """
@@ -65,11 +69,27 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                                            QtWidgets.QMessageBox.Ok)
             return
 
+        self.seq_data.clear()
+
+        # try opening and reading the file, if not throw and error
         try:
             fp = open(self.excel_label.text())
             file_data = fp.read()
-            print(file_data)
-        except:
-            print('some error occured')
+            
+            file_data = file_data.split('\n')
+            for item in file_data:
+                buf = item.split(',')
 
-
+                if len(buf) > 1:
+                    tempTuple = (buf[0], buf[1], buf[2], buf[3])
+                    if buf[0] not in self.seq_data:
+                        self.seq_data[buf[0]] = list()
+                    
+                    self.seq_data[buf[0]].append(tempTuple)
+        # throw whatever exception occurs
+        except Exception as e:
+            print(e)
+            return
+        # now close the file when its finally done
+        finally:
+            fp.close()
