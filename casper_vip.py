@@ -1,6 +1,11 @@
 import os
 from PyQt5 import QtWidgets, Qt, QtGui, QtCore, uic
 import GlobalSettings
+from PyQt5.QtChart import (QBarCategoryAxis,QBarSet, QChartView, QBarSeries,QChart,QLineSeries, QValueAxis)
+from PyQt5.QtGui import QPainter, QBrush, QPen
+from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
+from matplotlib.backends.backend_qt5agg import FigureCanvasAgg as FigureCanvas
+from matplotlib.ticker import MaxNLocator
 
 
 """
@@ -14,6 +19,10 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         uic.loadUi('casper_vip.ui', self)
         self.setWindowIcon(QtGui.QIcon('cas9image.png'))
         #-----------end PyQt init stuff--------------------
+
+        #-----------Graph stuff----------------------------
+        #self.whole_graph = QChartView()
+        #-----------End Graph stuff------------------------
 
         #--------------button connections--------------------
         self.back_button.clicked.connect(self.go_back)
@@ -93,3 +102,32 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         # now close the file when its finally done
         finally:
             fp.close()
+            self.plot_whole_graph()
+
+    """
+        plot_whole_graph: this function plots everything from the CSV file. Similar to the first graph in the excel sheet
+    """
+    def plot_whole_graph(self):
+        x1 = []
+        y1 = []
+
+        # go through and get the data that we are plotting
+        for seed in self.seq_data:
+            #print(seed)
+            for i in range(len(self.seq_data[seed])):
+                #print('\t', self.seq_data[seed][i])
+
+                if(self.seq_data[seed][i][1] != '0') and seed != 'Sequence':
+                    x1.append(float(self.seq_data[seed][i][1]))
+                    y1.append(float(self.seq_data[seed][i][3]))
+
+        # set the settings for the graph
+        self.whole_graph.canvas.axes.clear()
+        self.whole_graph.canvas.axes.scatter(x1,y1)
+        self.whole_graph.canvas.axes.axis((0,1.2,0,1.2))
+        self.whole_graph.canvas.axes.set_title("Some Title here")
+        self.whole_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
+        self.whole_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        self.whole_graph.canvas.axes.set_xlabel('Off-Target Score')
+        self.whole_graph.canvas.axes.set_ylabel('Relatedness')
+        self.whole_graph.canvas.draw()
