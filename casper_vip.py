@@ -108,24 +108,38 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         plot_whole_graph: this function plots everything from the CSV file. Similar to the first graph in the excel sheet
     """
     def plot_whole_graph(self):
-        x1 = []
-        y1 = []
+        x1 = dict()
+        y1 = dict()
+
+        x_line = [.05, .2]
+        y_line = [0, 1]
 
         # go through and get the data that we are plotting
         for seed in self.seq_data:
             #print(seed)
             for i in range(len(self.seq_data[seed])):
-                #print('\t', self.seq_data[seed][i])
+                print('\t', self.seq_data[seed][i])
+
+                temp_org = self.seq_data[seed][i][2]
 
                 if(self.seq_data[seed][i][1] != '0') and seed != 'Sequence':
-                    x1.append(float(self.seq_data[seed][i][1]))
-                    y1.append(float(self.seq_data[seed][i][3]))
+                    if temp_org not in x1 and temp_org not in y1:
+                        x1[temp_org] = list()
+                        y1[temp_org] = list()
+
+                    x1[temp_org].append(float(self.seq_data[seed][i][1]))
+                    y1[temp_org].append(float(self.seq_data[seed][i][3]))
 
         # set the settings for the graph
         self.whole_graph.canvas.axes.clear()
-        self.whole_graph.canvas.axes.scatter(x1,y1)
-        self.whole_graph.canvas.axes.axis((0,1.2,0,1.2))
-        self.whole_graph.canvas.axes.set_title("Some Title here")
+
+        for org in x1:
+            self.whole_graph.canvas.axes.scatter(x1[org],y1[org], label=org)
+        self.whole_graph.canvas.axes.plot(x_line, y_line, color='red')
+        self.whole_graph.canvas.axes.legend()
+        self.whole_graph.canvas.axes.grid(True)
+        self.whole_graph.canvas.axes.axis((0,1.0,0,1.0))
+        self.whole_graph.canvas.axes.set_title("Relatedness Graph")
         self.whole_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
         self.whole_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
         self.whole_graph.canvas.axes.set_xlabel('Off-Target Score')
