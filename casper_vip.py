@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPainter, QBrush, QPen
 from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as NavigationToolbar)
 from matplotlib.backends.backend_qt5agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.ticker import MaxNLocator
+from select_grnas import sel_grnas
 
 
 """
@@ -28,11 +29,25 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.back_button.clicked.connect(self.go_back)
         self.browse_for_excel_button.clicked.connect(self.browse_csv)
         self.analyze_button.clicked.connect(self.parse_csv)
+        self.select_individ_grnas.clicked.connect(self.launch_sel_grnas)
         #--------------End button connections----------------
 
         #------------variables-------------------------------
         self.seq_data = dict()
+        self.select_window = sel_grnas()
         #------------end variables---------------------------
+
+    """
+        prepare the data and launch the select grnas window
+    """
+    def launch_sel_grnas(self):
+        checker = self.parse_csv(show_graph=False)
+
+        if checker == -1:
+            return
+
+        self.select_window.launch(self, self.seq_data)
+        self.hide
 
     """
         launch: this launches the window. For now it just shows the window
@@ -69,14 +84,16 @@ class CASPER_VIP(QtWidgets.QMainWindow):
 
     """
         parse_csv: this function will parse the csv file chosen for analysis
+        Paramters:
+            show_graph: whether or not to show the whole graph
     """
-    def parse_csv(self):
+    def parse_csv(self, show_graph=True):
         # check to make sure they actually have a csv file search
         if self.excel_label.text() == 'Please browse for a CSV file' or self.excel_label.text() == "":
             QtWidgets.QMessageBox.question(self, "Nothing to analyze!",
                                            "Please choose a CSV file to analyze",
                                            QtWidgets.QMessageBox.Ok)
-            return
+            return -1
 
         self.seq_data.clear()
 
@@ -102,7 +119,8 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         # now close the file when its finally done
         finally:
             fp.close()
-            self.plot_whole_graph()
+            if show_graph:
+                self.plot_whole_graph()
 
     """
         plot_whole_graph: this function plots everything from the CSV file. Similar to the first graph in the excel sheet
