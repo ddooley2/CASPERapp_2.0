@@ -69,6 +69,8 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.directory = 'Cspr files'
         self.info_path = os.getcwd()
 
+        #seed ID substring filter button
+        self.filterButton.clicked.connect(self.fill_seed_id_chrom)
 
         ##################################
         self.scene = QtWidgets.QGraphicsScene()
@@ -452,6 +454,7 @@ class Multitargeting(QtWidgets.QMainWindow):
 
     #fill_seed_id_chrom will fill the seed ID dropdown, and create the chromosome graph
     def fill_seed_id_chrom(self):
+
         if self.ready_chromo_min_max==False:
             return
         if int(self.min_chromo.currentText())>int(self.max_chromo.currentText()):
@@ -469,11 +472,18 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.chromo_seed.clear()
         any = False
         seqLength = int(self.sq.endo_info[self.endo_drop.currentText()][1])
+        sub_str = str(self.seed_id_str.text())
+        sub_str = sub_str.replace(' ','')
         for seed in self.parser.repeats:
             if self.parser.repeats[seed] >= int(self.min_chromo.currentText()) and self.parser.repeats[seed]<=int(self.max_chromo.currentText()):
                 any = True
                 #temp = self.sq.compress(seed,64)
-                self.chromo_seed.addItem(str(self.sq.decompress64(seed, slength=seqLength, toseq= True)))
+                seed_id = str(self.sq.decompress64(seed, slength=seqLength, toseq= True))
+                if sub_str != '':
+                    if seed_id.startswith(sub_str):
+                        self.chromo_seed.addItem(seed_id)
+                else:
+                    self.chromo_seed.addItem(seed_id)
         if any==False:
             QtWidgets.QMessageBox.question(self, "No matches found",
                                            "No seed that is within the specifications could be found",
@@ -485,6 +495,8 @@ class Multitargeting(QtWidgets.QMainWindow):
             self.fill_min_max(False)
             self.fill_seed_id_chrom()
             return
+
+
         self.ready_chromo_make_graph=True
         self.chro_bar_data()
 

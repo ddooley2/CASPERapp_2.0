@@ -65,7 +65,7 @@
       <x>10</x>
       <y>90</y>
       <width>321</width>
-      <height>110</height>
+      <height>116</height>
      </rect>
     </property>
     <layout class="QFormLayout" name="formLayout">
@@ -374,6 +374,45 @@
       <width>601</width>
       <height>41</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="seed_id_str">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>120</y>
+      <width>113</width>
+      <height>21</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="filterButton">
+    <property name="geometry">
+     <rect>
+      <x>1250</x>
+      <y>120</y>
+      <width>41</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Filter</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>1130</x>
+      <y>100</y>
+      <width>111</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Seed ID Search</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>
