@@ -28,7 +28,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         #--------------button connections--------------------
         self.back_button.clicked.connect(self.go_back)
         self.browse_for_excel_button.clicked.connect(self.browse_csv)
-        self.analyze_button.clicked.connect(self.parse_csv)
+        self.analyze_button.clicked.connect(self.prep_analyze)
         self.select_individ_grnas.clicked.connect(self.launch_sel_grnas)
         #--------------End button connections----------------
 
@@ -36,6 +36,10 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.seq_data = dict()
         self.select_window = sel_grnas()
         #------------end variables---------------------------
+
+    # this is needed to get the graph to work
+    def prep_analyze(self):
+        self.parse_csv()
 
     """
         prepare the data and launch the select grnas window
@@ -47,7 +51,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             return
 
         self.select_window.launch(self, self.seq_data)
-        self.hide
+        self.hide()
 
     """
         launch: this launches the window. For now it just shows the window
@@ -115,12 +119,13 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         # throw whatever exception occurs
         except Exception as e:
             print(e)
+            fp.close()
             return
         # now close the file when its finally done
-        finally:
-            fp.close()
-            if show_graph:
-                self.plot_whole_graph()
+        fp.close()
+        # only show the graph is the user clicked on analyze
+        if show_graph:
+            self.plot_whole_graph()
 
     """
         plot_whole_graph: this function plots everything from the CSV file. Similar to the first graph in the excel sheet

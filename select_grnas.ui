@@ -44,9 +44,9 @@
     <property name="geometry">
      <rect>
       <x>70</x>
-      <y>30</y>
+      <y>20</y>
       <width>651</width>
-      <height>16</height>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
