@@ -114,7 +114,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         # this is the red line from the excel spread sheet
         # for now, it's hard coded, but eventually the user will select this as well
         x_line = [.05, .2]
-        y_line = [0, 1]
+        y_line = [0, 1.05]
 
         # go through and get the data that we are plotting
         for seed in self.seq_data:
@@ -137,6 +137,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         # graph the scatter plot
         for org in x1:
             self.whole_graph.canvas.axes.scatter(x1[org],y1[org], label=org)
+            
 
         # graph the red line
         self.whole_graph.canvas.axes.plot(x_line, y_line, color='red')
