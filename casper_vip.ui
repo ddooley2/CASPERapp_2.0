@@ -90,7 +90,7 @@
     <property name="currentIndex">
      <number>0</number>
     </property>
-    <widget class="whole_graph" name="whole_graph">
+    <widget class="total_grnas_graph" name="total_grnas_graph">
      <attribute name="title">
       <string>Tab 1</string>
      </attribute>
@@ -129,9 +129,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>whole_graph</class>
+   <class>total_grnas_graph</class>
    <extends>QWidget</extends>
-   <header>whole_graph.h</header>
+   <header>total_grnas_graph.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

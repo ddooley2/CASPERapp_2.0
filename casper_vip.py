@@ -34,12 +34,24 @@ class CASPER_VIP(QtWidgets.QMainWindow):
 
         #------------variables-------------------------------
         self.seq_data = dict()
+        self.grna_data = dict()
         self.select_window = sel_grnas()
         #------------end variables---------------------------
 
     # this is needed to get the graph to work
     def prep_analyze(self):
         self.parse_csv()
+
+    """
+        graph_selected_grans: this function will graph the data from the
+            select_grnas window
+    """
+    def graph_selected_grans(self):
+        print("I am now supposed to be graphing")
+        for item in self.grna_data:
+            print(item)
+            for seq in self.grna_data[item]:
+                print('\t', seq)
 
     """
         prepare the data and launch the select grnas window
@@ -155,23 +167,23 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     y1[temp_org].append(float(self.seq_data[seed][i][3]))
 
         # set the settings for the graph
-        self.whole_graph.canvas.axes.clear()
+        self.total_grnas_graph.canvas.axes.clear()
 
         # graph the scatter plot
         for org in x1:
-            self.whole_graph.canvas.axes.scatter(x1[org],y1[org], label=org)
+            self.total_grnas_graph.canvas.axes.scatter(x1[org],y1[org], label=org)
             
 
         # graph the red line
-        self.whole_graph.canvas.axes.plot(x_line, y_line, color='red')
+        self.total_grnas_graph.canvas.axes.plot(x_line, y_line, color='red')
 
         # set the rest of the settings for the graph
-        self.whole_graph.canvas.axes.legend()
-        self.whole_graph.canvas.axes.grid(True)
-        self.whole_graph.canvas.axes.axis((0,1.05,0,1.05))
-        self.whole_graph.canvas.axes.set_title("Relatedness Graph")
-        self.whole_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
-        self.whole_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
-        self.whole_graph.canvas.axes.set_xlabel('Off-Target Score')
-        self.whole_graph.canvas.axes.set_ylabel('Relatedness')
-        self.whole_graph.canvas.draw()
+        self.total_grnas_graph.canvas.axes.legend()
+        self.total_grnas_graph.canvas.axes.grid(True)
+        self.total_grnas_graph.canvas.axes.axis((0,1.05,0,1.05))
+        self.total_grnas_graph.canvas.axes.set_title("Relatedness Graph")
+        self.total_grnas_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
+        self.total_grnas_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        self.total_grnas_graph.canvas.axes.set_xlabel('Off-Target Score')
+        self.total_grnas_graph.canvas.axes.set_ylabel('Relatedness')
+        self.total_grnas_graph.canvas.draw()
