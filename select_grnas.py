@@ -126,10 +126,6 @@ class sel_grnas(QtWidgets.QMainWindow):
                 self.grna_table.setCellWidget(row_index, 4, ckbox)
                 self.check_boxes.append((tab_id, tab_sequence, tab_org, tab_relate, ckbox))
 
-                print(item)
-                for tup in self.seq_data[item]:
-                    print('\t', tup)
-
                 counter += 1
                 row_index += 1
 

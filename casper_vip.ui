@@ -88,14 +88,14 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="total_grnas_graph" name="total_grnas_graph">
      <attribute name="title">
       <string>Tab 1</string>
      </attribute>
     </widget>
-    <widget class="QWidget" name="tab_2">
+    <widget class="selected_grnas_graph" name="selected_grnas_graph">
      <attribute name="title">
       <string>Tab 2</string>
      </attribute>
@@ -132,6 +132,12 @@
    <class>total_grnas_graph</class>
    <extends>QWidget</extends>
    <header>total_grnas_graph.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>selected_grnas_graph</class>
+   <extends>QWidget</extends>
+   <header>selected_grnas_graph.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

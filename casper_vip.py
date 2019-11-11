@@ -35,6 +35,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         #------------variables-------------------------------
         self.seq_data = dict()
         self.grna_data = dict()
+        self.org_relate_data = dict()
         self.select_window = sel_grnas()
         #------------end variables---------------------------
 
@@ -47,11 +48,47 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             select_grnas window
     """
     def graph_selected_grans(self):
-        print("I am now supposed to be graphing")
-        for item in self.grna_data:
-            print(item)
-            for seq in self.grna_data[item]:
-                print('\t', seq)
+
+        x1 = dict()
+        y1 = dict()
+
+        # get each of the seeds and data
+        for seed in self.grna_data:
+            for i in range(len(self.grna_data[seed])):
+                # get the ID
+                temp_id = self.grna_data[seed][i][0]
+
+                if temp_id not in x1 and temp_id not in y1:
+                    x1[temp_id] = list()
+                    y1[temp_id] = list()
+
+                x1[temp_id].append(float(self.grna_data[seed][i][2]))
+                y1[temp_id].append(float(self.grna_data[seed][i][4]))
+
+        x_line = [.05, .2]
+        y_line = [0, 1.05]
+
+        self.selected_grnas_graph.canvas.axes.clear()
+
+        # graph the specifics
+        for id in x1:
+            self.selected_grnas_graph.canvas.axes.scatter(x1[id], y1[id], label=id)
+
+        # graph the red line
+        self.selected_grnas_graph.canvas.axes.plot(x_line, y_line, color='red')
+
+        
+        # set the rest of the settings for the graph
+        self.selected_grnas_graph.canvas.axes.legend()
+        self.selected_grnas_graph.canvas.axes.grid(True)
+        self.selected_grnas_graph.canvas.axes.set_xlim(left=0, right=1.05)
+        self.selected_grnas_graph.canvas.axes.set_ylim(bottom=0, top=1.05)
+        self.selected_grnas_graph.canvas.axes.set_title("Relatedness Graph")
+        self.selected_grnas_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
+        self.selected_grnas_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+        self.selected_grnas_graph.canvas.axes.set_xlabel('Off-Target Score')
+        self.selected_grnas_graph.canvas.axes.set_ylabel('Relatedness')
+        self.selected_grnas_graph.canvas.draw()
 
     """
         prepare the data and launch the select grnas window
@@ -127,6 +164,10 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     if buf[0] not in self.seq_data:
                         self.seq_data[buf[0]] = list()
                     
+                    # store the relatedness data for the organism
+                    if tempTuple[2] not in self.org_relate_data and tempTuple[2] != 'Org' and tempTuple[2] != '':
+                        self.org_relate_data[tempTuple[2]] = tempTuple[3]
+                    
                     self.seq_data[buf[0]].append(tempTuple)
         # throw whatever exception occurs
         except Exception as e:
@@ -180,7 +221,8 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         # set the rest of the settings for the graph
         self.total_grnas_graph.canvas.axes.legend()
         self.total_grnas_graph.canvas.axes.grid(True)
-        self.total_grnas_graph.canvas.axes.axis((0,1.05,0,1.05))
+        self.total_grnas_graph.canvas.axes.set_xlim(left=0, right=1.05)
+        self.total_grnas_graph.canvas.axes.set_ylim(bottom=0, top=1.05)
         self.total_grnas_graph.canvas.axes.set_title("Relatedness Graph")
         self.total_grnas_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
         self.total_grnas_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
