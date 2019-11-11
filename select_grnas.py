@@ -22,12 +22,13 @@ class sel_grnas(QtWidgets.QMainWindow):
         #--------------variables-----------------------------
         self.vip_window = 1
         self.seq_data = dict()
+        self.check_boxes = list()
         #--------------end variables-------------------------
 
         #--------------table stuff---------------------------
-        self.grna_table.setColumnCount(4)
+        self.grna_table.setColumnCount(5)
         self.grna_table.setShowGrid(False)
-        self.grna_table.setHorizontalHeaderLabels(['GRNA ID', 'Sequence', 'Organism', 'Relatedness Score'])
+        self.grna_table.setHorizontalHeaderLabels(['GRNA ID', 'Sequence', 'Organism', 'Relatedness Score', 'Select'])
         self.grna_table.horizontalHeader().setSectionsClickable(True)
         self.grna_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.grna_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
@@ -59,7 +60,35 @@ class sel_grnas(QtWidgets.QMainWindow):
         submit_func: to submits the selected GRNAs to the casper-vip window
     """
     def submit_func(self):
-        print("I need to submit now!")
+        is_one_checked = False
+        temp_data = dict()
+
+        # go through for every checkbox
+        for ckbox in self.check_boxes:
+            if ckbox[4].isChecked():
+                # set the error checker
+                is_one_checked = True
+
+                # store the right data
+                if ckbox[1].text() not in temp_data:
+                    temp_data[ckbox[1].text()] = list()
+
+                # now get every single grna as well
+                for item in self.seq_data[ckbox[1].text()]:
+                    temp_data[ckbox[1].text()].append((ckbox[0].text(), item[0], item[1], item[2], item[3]))
+
+        # make sure the user has selected a grna 
+        if not is_one_checked:
+            QtWidgets.QMessageBox.question(self, "Nothing to analyze!",
+                                           "Please choose at least 1 GRNA to graph!",
+                                           QtWidgets.QMessageBox.Ok)
+            return -1
+
+        self.vip_window.grna_data = temp_data
+        self.grna_table.setRowCount(0)
+        self.hide()
+        self.vip_window.show()
+        self.vip_window.graph_selected_grans()
 
     """
         load_table_data: this function loads all the data into the table
@@ -68,6 +97,7 @@ class sel_grnas(QtWidgets.QMainWindow):
         counter = 1
         # for now, counter is a temp-id
         row_index = 0
+        self.check_boxes.clear()
 
         for item in self.seq_data:
             if item != 'Sequence' and self.seq_data[item][0][1] != '0':
@@ -78,6 +108,7 @@ class sel_grnas(QtWidgets.QMainWindow):
                 tab_sequence = QtWidgets.QTableWidgetItem() 
                 tab_org = QtWidgets.QTableWidgetItem()   
                 tab_relate = QtWidgets.QTableWidgetItem()
+                ckbox = QtWidgets.QCheckBox()
 
                 # set the data we need
                 tab_id.setData(QtCore.Qt.EditRole, counter)
@@ -91,6 +122,11 @@ class sel_grnas(QtWidgets.QMainWindow):
                 self.grna_table.setItem(row_index, 2, tab_org)
                 self.grna_table.setItem(row_index, 3, tab_relate)
 
+                # store the checkbox and make sure it is in the list as well
+                self.grna_table.setCellWidget(row_index, 4, ckbox)
+                self.check_boxes.append((tab_id, tab_sequence, tab_org, tab_relate, ckbox))
+
+                print(item)
                 for tup in self.seq_data[item]:
                     print('\t', tup)
 
