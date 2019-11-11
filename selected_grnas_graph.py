@@ -4,7 +4,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvas
 
 from matplotlib.figure import Figure
 
-class whole_graph(QWidget):
+class selected_grnas_graph(QWidget):
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
 
