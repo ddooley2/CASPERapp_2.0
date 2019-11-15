@@ -52,6 +52,9 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         x1 = dict()
         y1 = dict()
 
+        # this is used for the markers
+        markers = ['o', 'v', 's', '*', 'x']
+
         # get each of the seeds and data
         for seed in self.grna_data:
             for i in range(len(self.grna_data[seed])):
@@ -70,12 +73,23 @@ class CASPER_VIP(QtWidgets.QMainWindow):
 
         self.selected_grnas_graph.canvas.axes.clear()
 
+        # sort the organisms, and graph the relatadness
+        sorted_data = sorted(self.org_relate_data.items(), key=lambda x: x[1], reverse=True)
+        for org in sorted_data:
+            # do some math to set the color correctly
+            self.selected_grnas_graph.canvas.axes.plot([0,1.05], [org[1], org[1]], label=org[0], color=[1,0 + (org[1]/1.3),0 + (org[1]/1.3)], linewidth=1)
+
         # graph the specifics
+        counter = 0
         for id in x1:
-            self.selected_grnas_graph.canvas.axes.scatter(x1[id], y1[id], label=id)
+            # if counter is greater than 
+            if counter > len(markers) - 1:
+                counter = 0
+            self.selected_grnas_graph.canvas.axes.scatter(x1[id], y1[id], label=id, marker=markers[counter])
+            counter += 1
 
         # graph the red line
-        self.selected_grnas_graph.canvas.axes.plot(x_line, y_line, color='red')
+        self.selected_grnas_graph.canvas.axes.plot(x_line, y_line, color='black')
 
         
         # set the rest of the settings for the graph
@@ -166,7 +180,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     
                     # store the relatedness data for the organism
                     if tempTuple[2] not in self.org_relate_data and tempTuple[2] != 'Org' and tempTuple[2] != '':
-                        self.org_relate_data[tempTuple[2]] = tempTuple[3]
+                        self.org_relate_data[tempTuple[2]] = float(tempTuple[3])
                     
                     self.seq_data[buf[0]].append(tempTuple)
         # throw whatever exception occurs
