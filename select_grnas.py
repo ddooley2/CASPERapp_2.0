@@ -100,7 +100,7 @@ class sel_grnas(QtWidgets.QMainWindow):
         self.check_boxes.clear()
 
         for item in self.seq_data:
-            if item != 'Sequence' and self.seq_data[item][0][1] != '0':
+            if item != 'Sequence':
                 self.grna_table.setRowCount(row_index + 1)
 
                 # get the widgets
@@ -113,8 +113,14 @@ class sel_grnas(QtWidgets.QMainWindow):
                 # set the data we need
                 tab_id.setData(QtCore.Qt.EditRole, counter)
                 tab_sequence.setData(QtCore.Qt.EditRole, item)
-                tab_org.setData(QtCore.Qt.EditRole, self.seq_data[item][0][2])
-                tab_relate.setData(QtCore.Qt.EditRole, self.seq_data[item][0][3])
+
+                # set the data based on whether or not the grna has a hit or not
+                if self.seq_data[item][0][1] == '0':
+                    tab_org.setData(QtCore.Qt.EditRole, 'No Hits')
+                    tab_relate.setData(QtCore.Qt.EditRole, 0)
+                else: 
+                    tab_org.setData(QtCore.Qt.EditRole, self.seq_data[item][0][2])
+                    tab_relate.setData(QtCore.Qt.EditRole, self.seq_data[item][0][3])
 
                 # now set the items in the table
                 self.grna_table.setItem(row_index, 0, tab_id)

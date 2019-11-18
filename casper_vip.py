@@ -65,8 +65,14 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     x1[temp_id] = list()
                     y1[temp_id] = list()
 
-                x1[temp_id].append(float(self.grna_data[seed][i][2]))
-                y1[temp_id].append(float(self.grna_data[seed][i][4]))
+
+                # check to see if they have a hit or not. No hit graph at 0,0, otherwise graph where it should be graphed
+                if self.grna_data[seed][i][2] == '0':
+                    x1[temp_id].append(0)
+                    y1[temp_id].append(0)
+                else:
+                    x1[temp_id].append(float(self.grna_data[seed][i][2]))
+                    y1[temp_id].append(float(self.grna_data[seed][i][4]))
 
         x_line = [.05, .2]
         y_line = [0, 1.05]
