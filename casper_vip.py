@@ -52,6 +52,9 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         x1 = dict()
         y1 = dict()
 
+        # this is used for the markers
+        markers = ['o', 'v', 's', '*', 'x']
+
         # get each of the seeds and data
         for seed in self.grna_data:
             for i in range(len(self.grna_data[seed])):
@@ -62,20 +65,37 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     x1[temp_id] = list()
                     y1[temp_id] = list()
 
-                x1[temp_id].append(float(self.grna_data[seed][i][2]))
-                y1[temp_id].append(float(self.grna_data[seed][i][4]))
+
+                # check to see if they have a hit or not. No hit graph at 0,0, otherwise graph where it should be graphed
+                if self.grna_data[seed][i][2] == '0':
+                    x1[temp_id].append(0)
+                    y1[temp_id].append(0)
+                else:
+                    x1[temp_id].append(float(self.grna_data[seed][i][2]))
+                    y1[temp_id].append(float(self.grna_data[seed][i][4]))
 
         x_line = [.05, .2]
         y_line = [0, 1.05]
 
         self.selected_grnas_graph.canvas.axes.clear()
 
+        # sort the organisms, and graph the relatadness
+        sorted_data = sorted(self.org_relate_data.items(), key=lambda x: x[1], reverse=True)
+        for org in sorted_data:
+            # do some math to set the color correctly
+            self.selected_grnas_graph.canvas.axes.plot([0,1.05], [org[1], org[1]], label=org[0], color=[1,0 + (org[1]/1.3),0 + (org[1]/1.3)], linewidth=1)
+
         # graph the specifics
+        counter = 0
         for id in x1:
-            self.selected_grnas_graph.canvas.axes.scatter(x1[id], y1[id], label=id)
+            # if counter is greater than 
+            if counter > len(markers) - 1:
+                counter = 0
+            self.selected_grnas_graph.canvas.axes.scatter(x1[id], y1[id], label=id, marker=markers[counter])
+            counter += 1
 
         # graph the red line
-        self.selected_grnas_graph.canvas.axes.plot(x_line, y_line, color='red')
+        self.selected_grnas_graph.canvas.axes.plot(x_line, y_line, color='black')
 
         
         # set the rest of the settings for the graph
@@ -83,11 +103,11 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.selected_grnas_graph.canvas.axes.grid(True)
         self.selected_grnas_graph.canvas.axes.set_xlim(left=0, right=1.05)
         self.selected_grnas_graph.canvas.axes.set_ylim(bottom=0, top=1.05)
-        self.selected_grnas_graph.canvas.axes.set_title("Relatedness Graph")
+        self.selected_grnas_graph.canvas.axes.set_title("Selected gRNAs")
         self.selected_grnas_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
         self.selected_grnas_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
         self.selected_grnas_graph.canvas.axes.set_xlabel('Off-Target Score')
-        self.selected_grnas_graph.canvas.axes.set_ylabel('Relatedness')
+        self.selected_grnas_graph.canvas.axes.set_ylabel('Phylogenetic Distance')
         self.selected_grnas_graph.canvas.draw()
 
     """
@@ -166,7 +186,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     
                     # store the relatedness data for the organism
                     if tempTuple[2] not in self.org_relate_data and tempTuple[2] != 'Org' and tempTuple[2] != '':
-                        self.org_relate_data[tempTuple[2]] = tempTuple[3]
+                        self.org_relate_data[tempTuple[2]] = float(tempTuple[3])
                     
                     self.seq_data[buf[0]].append(tempTuple)
         # throw whatever exception occurs
@@ -216,16 +236,16 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             
 
         # graph the red line
-        self.total_grnas_graph.canvas.axes.plot(x_line, y_line, color='red')
+        self.total_grnas_graph.canvas.axes.plot(x_line, y_line, color='black')
 
         # set the rest of the settings for the graph
         self.total_grnas_graph.canvas.axes.legend()
         self.total_grnas_graph.canvas.axes.grid(True)
         self.total_grnas_graph.canvas.axes.set_xlim(left=0, right=1.05)
         self.total_grnas_graph.canvas.axes.set_ylim(bottom=0, top=1.05)
-        self.total_grnas_graph.canvas.axes.set_title("Relatedness Graph")
+        self.total_grnas_graph.canvas.axes.set_title("Total gRNA Set")
         self.total_grnas_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
         self.total_grnas_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
         self.total_grnas_graph.canvas.axes.set_xlabel('Off-Target Score')
-        self.total_grnas_graph.canvas.axes.set_ylabel('Relatedness')
+        self.total_grnas_graph.canvas.axes.set_ylabel('Phylogenetic Distance')
         self.total_grnas_graph.canvas.draw()
