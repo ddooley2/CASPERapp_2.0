@@ -35,9 +35,18 @@ class sel_grnas(QtWidgets.QMainWindow):
         self.grna_table.setSelectionBehavior(QtWidgets.QTableView.SelectRows)
         self.grna_table.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.grna_table.resizeColumnsToContents()
+
+        self.switcher = [1,1,1,1,1]
+        self.grna_table.horizontalHeader().sectionClicked.connect(self.sort_table)
         #--------------end table stuff-----------------------
 
 
+    def sort_table(self, logical_index):
+        self.switcher[logical_index] *= -1
+        if self.switcher[logical_index] == -1:
+            self.grna_table.sortItems(logical_index, QtCore.Qt.DescendingOrder)
+        else:
+            self.grna_table.sortItems(logical_index, QtCore.Qt.AscendingOrder)
 
     """
         launch: this function launches the window.
@@ -119,8 +128,9 @@ class sel_grnas(QtWidgets.QMainWindow):
                     tab_org.setData(QtCore.Qt.EditRole, 'No Hits')
                     tab_relate.setData(QtCore.Qt.EditRole, 0)
                 else: 
+                    print(self.seq_data[item])
                     tab_org.setData(QtCore.Qt.EditRole, self.seq_data[item][0][2])
-                    tab_relate.setData(QtCore.Qt.EditRole, self.seq_data[item][0][3])
+                    tab_relate.setData(QtCore.Qt.EditRole, float(self.seq_data[item][0][3]))
 
                 # now set the items in the table
                 self.grna_table.setItem(row_index, 0, tab_id)

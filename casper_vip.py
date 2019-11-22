@@ -103,11 +103,11 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.selected_grnas_graph.canvas.axes.grid(True)
         self.selected_grnas_graph.canvas.axes.set_xlim(left=0, right=1.05)
         self.selected_grnas_graph.canvas.axes.set_ylim(bottom=0, top=1.05)
-        self.selected_grnas_graph.canvas.axes.set_title("Relatedness Graph")
+        self.selected_grnas_graph.canvas.axes.set_title("Selected gRNAs")
         self.selected_grnas_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
         self.selected_grnas_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
         self.selected_grnas_graph.canvas.axes.set_xlabel('Off-Target Score')
-        self.selected_grnas_graph.canvas.axes.set_ylabel('Relatedness')
+        self.selected_grnas_graph.canvas.axes.set_ylabel('Phylogenetic Distance')
         self.selected_grnas_graph.canvas.draw()
 
     """
@@ -236,16 +236,16 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             
 
         # graph the red line
-        self.total_grnas_graph.canvas.axes.plot(x_line, y_line, color='red')
+        self.total_grnas_graph.canvas.axes.plot(x_line, y_line, color='black')
 
         # set the rest of the settings for the graph
         self.total_grnas_graph.canvas.axes.legend()
         self.total_grnas_graph.canvas.axes.grid(True)
         self.total_grnas_graph.canvas.axes.set_xlim(left=0, right=1.05)
         self.total_grnas_graph.canvas.axes.set_ylim(bottom=0, top=1.05)
-        self.total_grnas_graph.canvas.axes.set_title("Relatedness Graph")
+        self.total_grnas_graph.canvas.axes.set_title("Total gRNA Set")
         self.total_grnas_graph.canvas.axes.set_xticks([0.0, 0.2, 0.4, 0.6, 0.8, 1.0])
         self.total_grnas_graph.canvas.axes.set_yticks([0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
         self.total_grnas_graph.canvas.axes.set_xlabel('Off-Target Score')
-        self.total_grnas_graph.canvas.axes.set_ylabel('Relatedness')
+        self.total_grnas_graph.canvas.axes.set_ylabel('Phylogenetic Distance')
         self.total_grnas_graph.canvas.draw()
