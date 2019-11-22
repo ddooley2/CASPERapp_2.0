@@ -128,7 +128,6 @@ class sel_grnas(QtWidgets.QMainWindow):
                     tab_org.setData(QtCore.Qt.EditRole, 'No Hits')
                     tab_relate.setData(QtCore.Qt.EditRole, 0)
                 else: 
-                    print(self.seq_data[item])
                     tab_org.setData(QtCore.Qt.EditRole, self.seq_data[item][0][2])
                     tab_relate.setData(QtCore.Qt.EditRole, float(self.seq_data[item][0][3]))
 
