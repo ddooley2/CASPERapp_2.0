@@ -13,6 +13,8 @@ class metagenome_creator(QtWidgets.QDialog):
         # Qt init stuff
         super(metagenome_creator, self).__init__()
         uic.loadUi('metagenome_creator.ui', self)
+        self.setWindowTitle("Metagenome Creator")
+        self.setWindowIcon(Qt.QIcon("cas9image.png"))
         self.seq_progress.setValue(0)
 
         # button connections
