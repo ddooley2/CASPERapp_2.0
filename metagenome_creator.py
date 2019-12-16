@@ -2,6 +2,12 @@ from PyQt5 import QtWidgets, Qt, QtGui, QtCore, uic
 import GlobalSettings
 import os
 
+
+###############################################################################
+# class name: metagenome_creator
+# This window allows the user to create metagenomic CSPR files
+# Combines FNA files selected, and then runs the sequencer. Creates 1 CSPR file with all FNA/Fasta files in it
+###############################################################################
 class metagenome_creator(QtWidgets.QDialog):
     def __init__(self):
         # Qt init stuff
@@ -14,22 +20,72 @@ class metagenome_creator(QtWidgets.QDialog):
 
         # variables
         self.Endos = dict()
+        self.fna_files = dict()
 
         # fna table stuff
+        self.fasta_table.setColumnCount(1)
+        self.fasta_table.setShowGrid(False)
+        self.fasta_table.setHorizontalHeaderLabels(["Organism"])
+        self.fasta_table.horizontalHeader().setSectionsClickable(True)
+        self.fasta_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
+        self.fasta_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
+        self.fasta_table.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.fasta_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
 
         # update the endo drop down menu
         self.fillEndo()
 
 
+    """
+        cancel_function: stops the process, and gets everything cleared up
+            Also hides the window
+    """
     def cancel_function(self):
         self.org_name.setText('')
         self.org_code.setText('')
         self.num_of_orgs.setText('')
         self.hide()
 
+    """
+        launch: this function will be called whenever the window is opened
+            It will get the window ready for use
+    """
     def launch(self):
+        self.fill_fasta_table()
         self.show()
 
+    def fill_fasta_table(self):
+        onlyfiles = [f for f in os.listdir(GlobalSettings.CSPR_DB) if os.path.isfile(os.path.join(GlobalSettings.CSPR_DB, f))]
+        self.fna_files.clear()
+
+        index = 0
+        for file in onlyfiles:
+            if file.find('.fna') != -1 or file.find('.fasta') != -1:
+                f = open(file, 'r')
+                hold = f.readline()
+                f.close()
+
+                spaceIndex = hold.find(' ') + 1
+                commaIndex = hold.find(',') + 1
+                buf = hold[spaceIndex:commaIndex]
+
+                self.fna_files[buf] = file
+                tabWidget = QtWidgets.QTableWidgetItem(buf)
+                self.fasta_table.setRowCount(index + 1)
+                self.fasta_table.setItem(index, 0, tabWidget)
+                index += 1
+
+        if index == 0:
+            self.fasta_table.clearContents()
+            self.fasta_table.setRowCount(0)
+
+        self.fasta_table.resizeColumnsToContents()
+
+    """
+        fillEndo: opens the CASPERinfo file and gets the 
+            Endonuclease options out of it.
+        Should only be called on init
+    """
     def fillEndo(self):
         if GlobalSettings.OPERATING_SYSTEM_ID == "Windows":
             f = open(GlobalSettings.appdir + "\\CASPERinfo")
