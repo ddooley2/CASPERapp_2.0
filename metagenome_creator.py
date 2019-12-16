@@ -80,7 +80,7 @@ class metagenome_creator(QtWidgets.QDialog):
                 f.close()
 
                 spaceIndex = hold.find(' ') + 1
-                commaIndex = hold.find(',') + 1
+                commaIndex = hold.find(',')
                 buf = hold[spaceIndex:commaIndex]
 
                 self.fna_files[buf] = file
