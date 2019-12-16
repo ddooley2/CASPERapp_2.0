@@ -500,8 +500,11 @@ class CMainWindow(QtWidgets.QMainWindow):
                         self.searches[search][item[0]].append(self.annotation_parser.reg_dict[checkNormalDict])
         if len(self.searches[searchValues[0]]) >= 1:  # if the previous search yielded results, do not continue
             # now call fill_table
-            self.Annotation_Window.fill_table_nonKegg(self)
-            return
+            if openAnnoWindow:
+                self.Annotation_Window.fill_table_nonKegg(self)
+                return
+            else:
+                return True
 
         self.progressBar.setValue(75)
         # reset, and search the parallel dictionary now
