@@ -214,6 +214,8 @@ class NCBI_Search_File(QtWidgets.QDialog):
                 #print("Deleting: ", file)
                 os.remove(file)
 
+        # update the two windows
         GlobalSettings.pop_Analysis.get_data()
+        GlobalSettings.mainWindow.meta_creator.fill_fasta_table()
 
         self.cancelFunction()

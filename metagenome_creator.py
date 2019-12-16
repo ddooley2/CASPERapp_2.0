@@ -17,6 +17,7 @@ class metagenome_creator(QtWidgets.QDialog):
 
         # button connections
         self.cancel_button.clicked.connect(self.cancel_function)
+        self.ncbi_searcher.clicked.connect(self.launch_ncbi_searcher)
 
         # variables
         self.Endos = dict()
@@ -35,6 +36,10 @@ class metagenome_creator(QtWidgets.QDialog):
         # update the endo drop down menu
         self.fillEndo()
 
+    # launches the NCBI_Searcher window
+    def launch_ncbi_searcher(self):
+        GlobalSettings.mainWindow.ncbi_search_dialog.searchProgressBar.setValue(0)
+        GlobalSettings.mainWindow.ncbi_search_dialog.show()
 
     """
         cancel_function: stops the process, and gets everything cleared up
@@ -54,6 +59,13 @@ class metagenome_creator(QtWidgets.QDialog):
         self.fill_fasta_table()
         self.show()
 
+    """
+        fill_fasta_table: 
+            this function fills the fna/fasta table with all of the 
+            fasta/fna files in the CSPR_DB folder
+            Should be called upon loading the window, and when the 
+            NCBI_Searcher window downloads files.
+    """
     def fill_fasta_table(self):
         onlyfiles = [f for f in os.listdir(GlobalSettings.CSPR_DB) if os.path.isfile(os.path.join(GlobalSettings.CSPR_DB, f))]
         self.fna_files.clear()
