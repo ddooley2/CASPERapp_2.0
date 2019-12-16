@@ -22,6 +22,7 @@ from cspr_chromesome_selection import cspr_chromesome_selection
 from generateLib import genLibrary
 from functools import partial
 from casper_vip import CASPER_VIP
+from metagenome_creator import metagenome_creator
 ############################## MT Libraries #####################
 import operator
 import pyqtgraph as pg
@@ -289,6 +290,7 @@ class CMainWindow(QtWidgets.QMainWindow):
         self.actionChange_Directory.triggered.connect(self.change_directory)
         self.actionMultitargeting.triggered.connect(self.changeto_multitargeting)
         self.actionPopulation_Analysis.triggered.connect(self.changeto_population_Analysis)
+        self.actionMetaGenome_Creator.triggered.connect(self.launch_metagenome_creator)
         self.actionCASPER_VIP.triggered.connect(self.load_casperVIP)
         # --- Setup for Gene Entry Field --- #
         self.geneEntryField.setPlainText("Example Inputs: \n"
@@ -310,9 +312,13 @@ class CMainWindow(QtWidgets.QMainWindow):
         self.genLib = genLibrary()
         self.myClosingWindow = closingWindow()
         self.vip_window = CASPER_VIP()
+        self.meta_creator = metagenome_creator()
 
         #self.newGenome.process.finished.connect(self.update_dropdowns)
         self.newGenome.contButton.clicked.connect(self.update_dropdowns)
+
+    def launch_metagenome_creator(self):
+        self.meta_creator.launch()
 
     def load_casperVIP(self):
         self.hide()
