@@ -7,6 +7,7 @@ from matplotlib.backends.backend_qt5agg import (NavigationToolbar2QT as Navigati
 from matplotlib.backends.backend_qt5agg import FigureCanvasAgg as FigureCanvas
 from matplotlib.ticker import MaxNLocator
 from select_grnas import sel_grnas
+from ot_vip import ot_vip
 
 
 """
@@ -21,9 +22,9 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.setWindowIcon(QtGui.QIcon('cas9image.png'))
         #-----------end PyQt init stuff--------------------
 
-        #-----------Graph stuff----------------------------
-        #self.whole_graph = QChartView()
-        #-----------End Graph stuff------------------------
+        #-----------tool button connections----------------
+        self.actionOff_Targeting.triggered.connect(self.launch_ot_window)
+        #-----------end tool button connections------------
 
         #--------------button connections--------------------
         self.back_button.clicked.connect(self.go_back)
@@ -37,7 +38,11 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.grna_data = dict()
         self.org_relate_data = dict()
         self.select_window = sel_grnas()
+        self.ot_window = ot_vip()
         #------------end variables---------------------------
+
+    def launch_ot_window(self):
+        self.ot_window.launch()
 
     # this is needed to get the graph to work
     def prep_analyze(self):
