@@ -88,6 +88,7 @@ class ot_vip(QtWidgets.QDialog):
         self.fill_meta_table()
         self.process = QtCore.QProcess()
         self.proc_running = False
+        self.progressBar.setValue(0)
         self.show()
 
     """
@@ -151,14 +152,43 @@ class ot_vip(QtWidgets.QDialog):
             return
         fp.close()
 
+    # if the user clicks the red X button
+    def closeEvent(self, event):
+        closeWindow = self.cancel_function()
+
+        if closeWindow == -2:
+            event.ignore()
+        else:
+            event.accept()
+
     # cancel function - resets everything and hides the window
     def cancel_function(self):
+
+        # if the process is running, warn the user
+        if self.proc_running:
+            error = QtWidgets.QMessageBox.question(self, "Off-Targeting is running",
+                                            "Off-Targetting is running. Closing this window will cancel that process, and return to the main window. .\n\n"
+                                            "Do you wish to continue?",
+                                            QtWidgets.QMessageBox.Yes |
+                                            QtWidgets.QMessageBox.No,
+                                            QtWidgets.QMessageBox.No)
+            if (error == QtWidgets.QMessageBox.No):
+                    return -2
+            else:
+                self.proc_running = False
+                self.process.kill()
+
         self.lib_path.setText("Please browse to choose a CSV Library File")
         self.meta_table.clearContents()
+        self.progressBar.setValue(0)
         self.meta_table.setRowCount(0)
         self.hide()
 
     def start_function(self):
+        # do nothing if the process is already running
+        if self.proc_running == True:
+            return
+        
         selected_list = self.meta_table.selectedItems()
 
         # make sure at least 1 and no more than 1 metagenomic file is selected
@@ -189,9 +219,11 @@ class ot_vip(QtWidgets.QDialog):
         # what should happen when the process is done
         def finished():
             self.progressBar.setValue(100)
+            self.proc_running = False
+            os.remove(self.temp_compressed_file)
             self.process.kill()
 
-            # need to run the OT parser here, delete the files, and close
+            # need to run the OT parser here
 
         # update the progress bar
         def progUpdate(p):
