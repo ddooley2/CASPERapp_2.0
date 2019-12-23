@@ -3,6 +3,7 @@ import GlobalSettings
 import os
 import Algorithms
 from functools import partial
+from OT_parser import ot_parser
 
 
 """
@@ -33,6 +34,7 @@ class ot_vip(QtWidgets.QDialog):
         self.proc_running = False
         self.off_tol = 0.0
         self.off_max_misMatch = 5
+        self.otParser = ot_parser()
 
         # meta table stuff
         self.meta_table.setColumnCount(1)
@@ -224,6 +226,7 @@ class ot_vip(QtWidgets.QDialog):
             self.process.kill()
 
             # need to run the OT parser here
+            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt')
 
         # update the progress bar
         def progUpdate(p):
