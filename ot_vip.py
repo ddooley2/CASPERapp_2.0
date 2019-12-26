@@ -226,7 +226,7 @@ class ot_vip(QtWidgets.QDialog):
             self.process.kill()
 
             # need to run the OT parser here
-            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt')
+            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt', cspr_file_path)
 
         # update the progress bar
         def progUpdate(p):

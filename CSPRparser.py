@@ -205,6 +205,37 @@ class CSPRparser:
 
             index = index + 2
 
+    """
+        get_orgs: this function gets every chromosome (thus orgs) in the misc line
+        NOTE: This function should only be used on what is known to be a META genomic CSPR file
+        Returns: a list of tuples storing the data
+            [0] is the organism name
+            [1] is the chromosome name itself
+    """
+    def get_orgs(self):
+        # read and throw away the junk, but store the misc line
+        fp = open(self.fileName, 'r')
+        fp.readline()
+        fp.readline()
+        misc_data = fp.readline()
+        fp.close()
+
+        # only pull out the data we care about
+        colonIndex = misc_data.find(':') + 2
+        usefulData = misc_data[colonIndex:]
+        usefulData = usefulData.split('|')
+        usefulData.pop()
+
+        # update the list we're returning
+        i = 0
+        misc_data = list()
+        while i < len(usefulData):
+            temp = usefulData[i].split(',')
+            misc_data.append((temp[0], temp[1]))
+            i += 1
+
+        return misc_data
+
     # this function takes a list of all the file names
     # it finds the repeats for each file, and also checks to see if those repeats are in each file, not just the first
     # stores the data in a class object
