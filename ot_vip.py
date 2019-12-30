@@ -149,7 +149,12 @@ class ot_vip(QtWidgets.QDialog):
             return 
         # any other exception
         except Exception as e:
+            # throw the error, and alert the user.
             print(e)
+            QtWidgets.QMessageBox.question(self, "Error",
+                                           "This file could not be parsed by our program.\nPlease make sure that it is a CSV file from our Generate Library functionality with the 'Output All Data' option selected!",
+                                           QtWidgets.QMessageBox.Ok)
+            self.lib_path.setText("Please browse to choose a CSV Library File")
             fp.close()
             return
         fp.close()
@@ -225,8 +230,10 @@ class ot_vip(QtWidgets.QDialog):
             os.remove(self.temp_compressed_file)
             self.process.kill()
 
-            # need to run the OT parser here
+            # run the OT parser, and the close out the window
             self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt', cspr_file_path)
+            os.remove(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt')
+            self.cancel_function()
 
         # update the progress bar
         def progUpdate(p):

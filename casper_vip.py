@@ -20,6 +20,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         super(CASPER_VIP, self).__init__()
         uic.loadUi('casper_vip.ui', self)
         self.setWindowIcon(QtGui.QIcon('cas9image.png'))
+        self.setWindowTitle("CASPER VIP")
         #-----------end PyQt init stuff--------------------
 
         #-----------tool button connections----------------
