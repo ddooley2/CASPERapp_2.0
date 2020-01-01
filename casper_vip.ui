@@ -88,18 +88,31 @@
      </rect>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
-    <widget class="whole_graph" name="whole_graph">
+    <widget class="total_grnas_graph" name="total_grnas_graph">
      <attribute name="title">
       <string>Tab 1</string>
      </attribute>
     </widget>
-    <widget class="QWidget" name="tab_2">
+    <widget class="selected_grnas_graph" name="selected_grnas_graph">
      <attribute name="title">
       <string>Tab 2</string>
      </attribute>
     </widget>
+   </widget>
+   <widget class="QPushButton" name="select_individ_grnas">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>10</y>
+      <width>351</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select Individual GRNAs</string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -111,14 +124,32 @@
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionOff_Targeting"/>
+   </widget>
+   <addaction name="menuTools"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOff_Targeting">
+   <property name="text">
+    <string>Off-Targeting</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
-   <class>whole_graph</class>
+   <class>total_grnas_graph</class>
    <extends>QWidget</extends>
-   <header>whole_graph.h</header>
+   <header>total_grnas_graph.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>selected_grnas_graph</class>
+   <extends>QWidget</extends>
+   <header>selected_grnas_graph.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

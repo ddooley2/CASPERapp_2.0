@@ -511,7 +511,7 @@ class genLibrary(QtWidgets.QDialog):
 
         # if both OT and output all are checked
         if self.find_off_Checkbox.isChecked() and self.output_all_checkbox.isChecked():
-            f.write('Gene Name,Sequence,On-Target Score,Off-Target Score,Location,PAM,Strand\n')
+            f.write('Gene Name,Sequence,On-Target Score,Location,PAM,Strand,Off-Target Score\n')
         # if only output all is checked
         elif not self.find_off_Checkbox.isChecked() and self.output_all_checkbox.isChecked():
             f.write('Gene Name,Sequence,On-Target Score,Location,PAM,Strand\n')
@@ -538,7 +538,7 @@ class genLibrary(QtWidgets.QDialog):
 
                 # if both OT and output all are checked
                 if self.find_off_Checkbox.isChecked() and self.output_all_checkbox.isChecked():
-                    f.write(tag_id + ',' + target[1] + ',' + str(target[3]) + ',' + str(target[5]) + ',' + str(target[0]) + ',' + target[2] + ',' + target[4][0] + '\n')
+                    f.write(tag_id + ',' + target[1] + ',' + str(target[3]) + ',' + str(target[0]) + ',' + target[2] + ',' + target[4][0] + ',' + str(target[5]) + '\n')
                 # if only output all is checked
                 elif not self.find_off_Checkbox.isChecked() and self.output_all_checkbox.isChecked():
                     f.write(tag_id + ',' + target[1] + ',' + str(target[3]) + ',' + str(target[0]) + ',' + target[2] + ',' + target[4][0] + '\n')
