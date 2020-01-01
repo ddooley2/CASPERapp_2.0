@@ -750,7 +750,9 @@
     </widget>
     <addaction name="actionMultitargeting"/>
     <addaction name="actionPopulation_Analysis"/>
+    <addaction name="actionCASPER_VIP"/>
     <addaction name="actionComplete_Target_Analysis"/>
+    <addaction name="actionMetaGenome_Creator"/>
     <addaction name="separator"/>
     <addaction name="menuExport_to"/>
     <addaction name="actionNCBI_BLAST"/>
@@ -887,6 +889,16 @@
   <action name="actionCo_Targeting">
    <property name="text">
     <string>Co-Targeting</string>
+   </property>
+  </action>
+  <action name="actionCASPER_VIP">
+   <property name="text">
+    <string>CASPER VIP</string>
+   </property>
+  </action>
+  <action name="actionMetaGenome_Creator">
+   <property name="text">
+    <string>MetaGenome Creator</string>
    </property>
   </action>
  </widget>

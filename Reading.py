@@ -29,7 +29,7 @@ class AnnotationTable:
     def get_positions(self):
         r = Random_Mutagenesis(self.org, "spCas9", False)
         self.repeats = r.return_all_seqs()  # entries exist in a list in the form (sequence, [locations], size)
-        print "got instances"
+        print ("got instances")
 
     def translate_chromosome(self, chr):
         numbers = ('1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16')
@@ -55,7 +55,7 @@ class AnnotationTable:
                     if Start < int(position[1]) < End:
                         # Associates product with sequence. Extra indexing b/c parsing from GenBankFile returns list
                         self.feature_targets[sequence[0]].append(feature[3][0])
-                        print "found a target"
+                        print ("found a target")
                         # Adding to Gene Information Container
                         geneid = feature[2][0]
                         if geneid in self.genes:  # have we seen this gene before?

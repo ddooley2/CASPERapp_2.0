@@ -143,7 +143,7 @@ class CSPRparser:
                     #print(bufferString)
                     bufferString = fileStream.readline()
         fileStream.close()
-
+        print(self.chromesomeList)
 ########################################################################################################
 #    this function reads just the repeats
 #    it stores this data in 2 dictionaries:
@@ -174,8 +174,7 @@ class CSPRparser:
         #parse the info now and store it in the correct dictionaries
         while(index + 1 < len(split_info)):
             seed = self.seqTrans.decompress64(split_info[index], slength=seedLength)
-            repeat =split_info[index + 1].split("\t")
-
+            repeat = split_info[index + 1].split("\t")
             self.repeats[seed] = 0
             self.seeds[seed] = []
             self.dec_tup_data[seed] = []
@@ -186,25 +185,94 @@ class CSPRparser:
                     sequence =item.split(',')
                     self.seeds[seed].append(sequence)
                     temp = sequence[1:4]
-
-                    #print(seed)
-                    #print(str(self.seqTrans.compress(seed,64)))
-                    #print(temp[1])
-
-                    #temp[1] = str(self.seqTrans.compress(seed,64)) + str(temp[1])
-                    #print(temp)
-
                     temp.append(str(self.seqTrans.decompress64(seed, toseq=True ,slength=int(seedLength))))
-                    #print(temp)
                     string = ",".join(temp)
-                    #print(string)
-                    #print('\t', self.seqTrans.decompress_csf_tuple(string, bool=True, endo=endoChoice))
-                    self.dec_tup_data[seed].append(self.seqTrans.decompress_csf_tuple(string, bool=True, endo=endoChoice))
+                    dec = self.seqTrans.decompress_csf_tuple(string, bool=True, endo=endoChoice)
+                    dec = list(dec)
+                    dec.append(sequence[0])
+                    #dec = tuple(dec)
+                    self.dec_tup_data[seed].append(dec)
                     self.multiSum += self.seqTrans.decompress64(sequence[3], slength=seedLength)
                     self.multiCount += 1
+            #print(self.dec_tup_data[seed])
+            #if index < 20:
+                #print(self.dec_tup_data[seed])
 
             index = index + 2
 
+<<<<<<< HEAD
+        i = 0
+        for item in self.dec_tup_data:
+            # print('old')
+            # print(self.dec_tup_data[item])
+            sorted_temp = []
+            temp = []
+            j = 0
+            while j < len(self.dec_tup_data[item]):
+                temp.append(self.dec_tup_data[item][j])
+                while(True):
+                    if j < len(self.dec_tup_data[item])-1:
+                        if self.dec_tup_data[item][j][6] == self.dec_tup_data[item][j+1][6]:
+                            temp.append(self.dec_tup_data[item][j+1])
+                            j += 1
+                        else:
+                            temp.sort(key=lambda x: x[0])
+                            for sub in temp:
+                                sorted_temp.append(sub)
+                            temp = []
+                            break
+                    else:
+                        temp.sort(key=lambda x: x[0])
+                        for sub in temp:
+                            sorted_temp.append(sub)
+                        temp = []
+                        break
+                j += 1
+            self.dec_tup_data[item] = sorted_temp
+            # print('New')
+            # print(self.dec_tup_data[item])
+            i += 1
+
+
+
+
+            # if i < 20:
+            #     print(self.dec_tup_data[item])
+            i += 1
+
+=======
+    """
+        get_orgs: this function gets every chromosome (thus orgs) in the misc line
+        NOTE: This function should only be used on what is known to be a META genomic CSPR file
+        Returns: a list of tuples storing the data
+            [0] is the organism name
+            [1] is the chromosome name itself
+    """
+    def get_orgs(self):
+        # read and throw away the junk, but store the misc line
+        fp = open(self.fileName, 'r')
+        fp.readline()
+        fp.readline()
+        misc_data = fp.readline()
+        fp.close()
+
+        # only pull out the data we care about
+        colonIndex = misc_data.find(':') + 2
+        usefulData = misc_data[colonIndex:]
+        usefulData = usefulData.split('|')
+        usefulData.pop()
+
+        # update the list we're returning
+        i = 0
+        misc_data = list()
+        while i < len(usefulData):
+            temp = usefulData[i].split(',')
+            misc_data.append((temp[0], temp[1]))
+            i += 1
+
+        return misc_data
+
+>>>>>>> c62f48607b02bb1817f5b162a6c42c7be78570cc
     # this function takes a list of all the file names
     # it finds the repeats for each file, and also checks to see if those repeats are in each file, not just the first
     # stores the data in a class object

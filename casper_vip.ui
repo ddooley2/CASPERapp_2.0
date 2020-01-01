@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1237</width>
+    <height>838</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="browse_for_excel_button">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>60</y>
+      <width>141</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Choose CSV File</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="excel_label">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>60</y>
+      <width>1001</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please click the &amp;quot;Choose CSV File&amp;quot; button to browse for a CSV file to use.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>Please browse for a CSV file</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="back_button">
+    <property name="geometry">
+     <rect>
+      <x>1120</x>
+      <y>760</y>
+      <width>101</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Go back to the main window&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>Go Back</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="analyze_button">
+    <property name="geometry">
+     <rect>
+      <x>30</x>
+      <y>140</y>
+      <width>121</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Analyze the CSV file chosen&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>Analyze</string>
+    </property>
+   </widget>
+   <widget class="QTabWidget" name="tabWidget">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>180</y>
+      <width>1091</width>
+      <height>611</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <widget class="total_grnas_graph" name="total_grnas_graph">
+     <attribute name="title">
+      <string>Tab 1</string>
+     </attribute>
+    </widget>
+    <widget class="selected_grnas_graph" name="selected_grnas_graph">
+     <attribute name="title">
+      <string>Tab 2</string>
+     </attribute>
+    </widget>
+   </widget>
+   <widget class="QPushButton" name="select_individ_grnas">
+    <property name="geometry">
+     <rect>
+      <x>860</x>
+      <y>10</y>
+      <width>351</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Select Individual GRNAs</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1237</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="actionOff_Targeting"/>
+   </widget>
+   <addaction name="menuTools"/>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionOff_Targeting">
+   <property name="text">
+    <string>Off-Targeting</string>
+   </property>
+  </action>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>total_grnas_graph</class>
+   <extends>QWidget</extends>
+   <header>total_grnas_graph.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>selected_grnas_graph</class>
+   <extends>QWidget</extends>
+   <header>selected_grnas_graph.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
