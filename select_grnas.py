@@ -28,7 +28,7 @@ class sel_grnas(QtWidgets.QMainWindow):
         #--------------table stuff---------------------------
         self.grna_table.setColumnCount(5)
         self.grna_table.setShowGrid(False)
-        self.grna_table.setHorizontalHeaderLabels(['GRNA ID', 'Sequence', 'Organism', 'Relatedness Score', 'Select'])
+        self.grna_table.setHorizontalHeaderLabels(['gRNA ID', 'Sequence', 'Organism', 'Relatedness Score', 'Select'])
         self.grna_table.horizontalHeader().setSectionsClickable(True)
         self.grna_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.grna_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
