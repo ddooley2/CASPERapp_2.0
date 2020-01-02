@@ -200,7 +200,6 @@ class CSPRparser:
 
             index = index + 2
 
-<<<<<<< HEAD
         i = 0
         for item in self.dec_tup_data:
             # print('old')
@@ -240,7 +239,6 @@ class CSPRparser:
             #     print(self.dec_tup_data[item])
             i += 1
 
-=======
     """
         get_orgs: this function gets every chromosome (thus orgs) in the misc line
         NOTE: This function should only be used on what is known to be a META genomic CSPR file
@@ -272,7 +270,6 @@ class CSPRparser:
 
         return misc_data
 
->>>>>>> c62f48607b02bb1817f5b162a6c42c7be78570cc
     # this function takes a list of all the file names
     # it finds the repeats for each file, and also checks to see if those repeats are in each file, not just the first
     # stores the data in a class object
