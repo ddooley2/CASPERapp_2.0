@@ -9,6 +9,9 @@ from matplotlib.ticker import MaxNLocator
 from select_grnas import sel_grnas
 from ot_vip import ot_vip
 
+# these two are constants for the default quality cutoff points. Y is a list because the user cannot edit it, while the user can edit X
+DEFAULT_X_COORD = ".05,.2"
+DEFAULT_Y_COORD = [0, 1.05]
 
 """
     This is the CASPER_VIP class. 
@@ -81,7 +84,6 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     y1[temp_id].append(float(self.grna_data[seed][i][4]))
 
         x_line = [.05, .2]
-        y_line = [0, 1.05]
 
         self.selected_grnas_graph.canvas.axes.clear()
 
@@ -101,7 +103,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             counter += 1
 
         # graph the red line
-        self.selected_grnas_graph.canvas.axes.plot(x_line, y_line, color='black')
+        self.selected_grnas_graph.canvas.axes.plot(x_line, DEFAULT_Y_COORD, color='black')
 
         
         # set the rest of the settings for the graph
@@ -139,6 +141,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
     """
     def go_back(self):
         GlobalSettings.mainWindow.show()
+        self.x_coord_line.setText(DEFAULT_X_COORD)
         self.hide()
 
     """
@@ -205,6 +208,35 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         if show_graph:
             self.plot_whole_graph()
 
+    def get_x_coords(self):
+        coords = self.x_coord_line.text().split(',')
+        if len(coords) != 2:
+            QtWidgets.QMessageBox.question(self, "Error!",
+                                           "Please follow the correct format for the X coordinates. It must be: <x1,x2>.",
+                                           QtWidgets.QMessageBox.Ok)
+            self.x_coord_line.setText(DEFAULT_X_COORD)
+            return -1
+
+        ret_list = list()
+        try:
+            for item in coords:
+                x = float(item)
+                if x > 1 or x < 0:
+                    QtWidgets.QMessageBox.question(self, "Error!",
+                                           "Please make sure that each value for X is no greater than 1, and no smaller than 0. So 0 <= x <= 1",
+                                           QtWidgets.QMessageBox.Ok)
+                    self.x_coord_line.setText(DEFAULT_X_COORD)
+                    return -1
+                ret_list.append(x)
+
+        except ValueError:
+            QtWidgets.QMessageBox.question(self, "Error!",
+                                           "Please make sure only decimal numbers are given!",
+                                           QtWidgets.QMessageBox.Ok)
+            self.x_coord_line.setText(DEFAULT_X_COORD)
+            return -1
+        return ret_list
+
     """
         plot_whole_graph: this function plots everything from the CSV file. Similar to the first graph in the excel sheet
     """
@@ -214,8 +246,9 @@ class CASPER_VIP(QtWidgets.QMainWindow):
 
         # this is the red line from the excel spread sheet
         # for now, it's hard coded, but eventually the user will select this as well
-        x_line = [.05, .2]
-        y_line = [0, 1.05]
+        x_line = self.get_x_coords()
+        if x_line == -1:
+            return
 
         # go through and get the data that we are plotting
         for seed in self.seq_data:
@@ -241,7 +274,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             
 
         # graph the red line
-        self.total_grnas_graph.canvas.axes.plot(x_line, y_line, color='black')
+        self.total_grnas_graph.canvas.axes.plot(x_line, DEFAULT_Y_COORD, color='black')
 
         # set the rest of the settings for the graph
         self.total_grnas_graph.canvas.axes.legend()
