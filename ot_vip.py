@@ -243,11 +243,19 @@ class ot_vip(QtWidgets.QDialog):
                         QtWidgets.QMessageBox.Ok)
             return
 
+        if self.fasta_line.text() == FASTA_LINE_DEFAULT:
+            QtWidgets.QMessageBox.question(self, "Error",
+                        "Please choose an aligned fasta file!",
+                        QtWidgets.QMessageBox.Ok)
+            return
+
         self.compress_file_off()
         self.run_OT(self.files[selected_list[0].text()])
 
     """
         run_OT: this function builds the commands and actually runs OT
+        Parameters:
+            cspr_file_path: the path to the cspr file
     """
     def run_OT(self, cspr_file_path):
         self.perc = False
@@ -263,7 +271,7 @@ class ot_vip(QtWidgets.QDialog):
 
             # run the OT parser, and the close out the window
             self.otParser.appended_file = GlobalSettings.CSPR_DB + os.path.sep + self.output_file_edit.text() + '.csv'
-            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt', cspr_file_path)
+            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt', cspr_file_path, self.fasta_line.text())
             os.remove(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt')
             self.cancel_function()
 

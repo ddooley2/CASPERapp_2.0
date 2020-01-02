@@ -184,14 +184,13 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             file_data = file_data.split('\n')
             for item in file_data:
                 buf = item.split(',')
-
                 if len(buf) > 1:
                     tempTuple = (buf[0], buf[1], buf[2], buf[3])
                     if buf[0] not in self.seq_data:
                         self.seq_data[buf[0]] = list()
                     
                     # store the relatedness data for the organism
-                    if tempTuple[2] not in self.org_relate_data and tempTuple[2] != 'Org' and tempTuple[2] != '':
+                    if tempTuple[2] not in self.org_relate_data and tempTuple[2] != 'Organism' and tempTuple[2] != '':
                         self.org_relate_data[tempTuple[2]] = float(tempTuple[3])
                     
                     self.seq_data[buf[0]].append(tempTuple)
