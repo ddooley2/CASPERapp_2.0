@@ -189,8 +189,9 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             file_data = file_data.split('\n')
             for item in file_data:
                 buf = item.split(',')
+
                 if len(buf) > 1:
-                    tempTuple = (buf[0], buf[1], buf[2], buf[3])
+                    tempTuple = (buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7], buf[8])
                     if buf[0] not in self.seq_data:
                         self.seq_data[buf[0]] = list()
                     
