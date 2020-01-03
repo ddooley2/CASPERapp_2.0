@@ -84,6 +84,8 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     y1[temp_id].append(float(self.grna_data[seed][i][4]))
 
         x_line = self.get_x_coords()
+        if x_line == -1:
+            return
 
         self.selected_grnas_graph.canvas.axes.clear()
 
@@ -208,7 +210,12 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         if show_graph:
             self.plot_whole_graph()
 
+    """
+        get_x_coords: this function pulls out the x-coordinates about the editable box 
+        Returns: a list: [first x coord, second x coord]
+    """
     def get_x_coords(self):
+        # split the data and make sure there's 2 items
         coords = self.x_coord_line.text().split(',')
         if len(coords) != 2:
             QtWidgets.QMessageBox.question(self, "Error!",
@@ -217,10 +224,13 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             self.x_coord_line.setText(DEFAULT_X_COORD)
             return -1
 
+        # try and convert both numbers from strings to float
         ret_list = list()
         try:
             for item in coords:
                 x = float(item)
+
+                # make sure each item is 0 <= x <= 1
                 if x > 1 or x < 0:
                     QtWidgets.QMessageBox.question(self, "Error!",
                                            "Please make sure that each value for X is no greater than 1, and no smaller than 0. So 0 <= x <= 1",
@@ -229,6 +239,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     return -1
                 ret_list.append(x)
 
+        # if trying to convert to a float fails, throw an error
         except ValueError:
             QtWidgets.QMessageBox.question(self, "Error!",
                                            "Please make sure only decimal numbers are given!",
