@@ -47,7 +47,7 @@ class ot_vip(QtWidgets.QDialog):
         self.meta_table.horizontalHeader().setSectionsClickable(True)
         self.meta_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.meta_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        self.meta_table.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.meta_table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.meta_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
 
     """
