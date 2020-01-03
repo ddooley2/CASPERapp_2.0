@@ -83,7 +83,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     x1[temp_id].append(float(self.grna_data[seed][i][2]))
                     y1[temp_id].append(float(self.grna_data[seed][i][4]))
 
-        x_line = [.05, .2]
+        x_line = self.get_x_coords()
 
         self.selected_grnas_graph.canvas.axes.clear()
 
