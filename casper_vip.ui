@@ -23,6 +23,9 @@
       <height>23</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Please choose a CSV file that was made by the Off-Target tool in the toolbar above.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="text">
      <string>Choose CSV File</string>
     </property>
@@ -72,7 +75,7 @@
      </rect>
     </property>
     <property name="toolTip">
-     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Analyze the CSV file chosen&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Analyze the CSV file chosen. This will update the graph in Tab 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
      <string>Analyze</string>
@@ -87,8 +90,11 @@
       <height>611</height>
      </rect>
     </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This is the canvas where the graphs are drawn.&lt;/p&gt;&lt;p&gt;Tab 1: This graph is the graph for all gRNAs in the entire data set.&lt;/p&gt;&lt;p&gt;Tab 2: This graph is the graph for the specfic gRNAs chosen in the 'Select Individual gRNAs' window.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
     <property name="currentIndex">
-     <number>1</number>
+     <number>0</number>
     </property>
     <widget class="total_grnas_graph" name="total_grnas_graph">
      <attribute name="title">
@@ -109,6 +115,9 @@
       <width>351</width>
       <height>23</height>
      </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Click this button to graph specific gRNAs that you select.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
     <property name="text">
      <string>Select Individual gRNAs</string>
@@ -154,6 +163,76 @@
     </property>
     <property name="text">
      <string>X Coordinates:</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="hide_total_legend">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>160</y>
+      <width>161</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked:&lt;/p&gt;&lt;p&gt;	The legend of the total gRNA graph will be hidden&lt;/p&gt;&lt;p&gt;If un-checked:&lt;/p&gt;&lt;p&gt;	The legend of the total gRNA graph will be shown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>Hide Total gRNA Legend</string>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="hide_selected_legend">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>930</x>
+      <y>130</y>
+      <width>171</width>
+      <height>18</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;If checked:&lt;/p&gt;&lt;p&gt;	The legend of the selected gRNA graph will be hidden&lt;/p&gt;&lt;p&gt;If un-checked:&lt;/p&gt;&lt;p&gt;	The legend of the selected gRNA graph will be shown&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>Hide Selected gRNA Legend</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="clear_total_graph_button">
+    <property name="geometry">
+     <rect>
+      <x>1114</x>
+      <y>730</y>
+      <width>111</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear the total gRNA graph. This is the graph on Tab 1.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>Clear Total Graph</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="clear_selected_graph_button">
+    <property name="geometry">
+     <rect>
+      <x>1104</x>
+      <y>700</y>
+      <width>131</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Clear the selected gRNA graph. This is the graph on Tab 2.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="text">
+     <string>Clear Selected Graph</string>
     </property>
    </widget>
   </widget>
