@@ -161,7 +161,6 @@ class ot_vip(QtWidgets.QDialog):
                     key_data = temp_list[1]
                     if key_data not in self.sequences:
                         self.sequences[key_data] = [temp_list[0], temp_list[1], temp_list[2], temp_list[3], temp_list[4], temp_list[5]]
-
                 buf = fp.readline()
         # excetpion for permission error
         except PermissionError:
@@ -271,7 +270,7 @@ class ot_vip(QtWidgets.QDialog):
 
             # run the OT parser, and the close out the window
             self.otParser.appended_file = GlobalSettings.CSPR_DB + os.path.sep + self.output_file_edit.text() + '.csv'
-            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt', cspr_file_path, self.fasta_line.text())
+            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt', cspr_file_path, self.fasta_line.text(), self.sequences)
             os.remove(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt')
             self.cancel_function()
 
