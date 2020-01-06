@@ -421,7 +421,7 @@
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;This checkbox will output the data to a CSV file.&lt;/p&gt;&lt;p&gt;&lt;br/&gt;&lt;/p&gt;&lt;p&gt;Otherwise it will output it to a text file, delimited by commas.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
    <property name="text">
-    <string>To CSV</string>
+    <string>To .csv Format</string>
    </property>
   </widget>
  </widget>
