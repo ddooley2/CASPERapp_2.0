@@ -9,6 +9,9 @@ from matplotlib.ticker import MaxNLocator
 from select_grnas import sel_grnas
 from ot_vip import ot_vip
 
+# these two are constants for the default quality cutoff points. Y is a list because the user cannot edit it, while the user can edit X
+DEFAULT_X_COORD = ".05,.2"
+DEFAULT_Y_COORD = [0, 1.05]
 
 """
     This is the CASPER_VIP class. 
@@ -27,11 +30,18 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.actionOff_Targeting.triggered.connect(self.launch_ot_window)
         #-----------end tool button connections------------
 
+        #------------checkbox trigger connections-----------------------
+        self.hide_selected_legend.stateChanged.connect(self.select_legend_hider)
+        self.hide_total_legend.stateChanged.connect(self.total_legend_hider)
+        #------------end checkox trigger connections--------------------
+
         #--------------button connections--------------------
         self.back_button.clicked.connect(self.go_back)
         self.browse_for_excel_button.clicked.connect(self.browse_csv)
         self.analyze_button.clicked.connect(self.prep_analyze)
         self.select_individ_grnas.clicked.connect(self.launch_sel_grnas)
+        self.clear_selected_graph_button.clicked.connect(self.clear_selected_graph)
+        self.clear_total_graph_button.clicked.connect(self.clear_total_graph)
         #--------------End button connections----------------
 
         #------------variables-------------------------------
@@ -48,6 +58,20 @@ class CASPER_VIP(QtWidgets.QMainWindow):
     # this is needed to get the graph to work
     def prep_analyze(self):
         self.parse_csv()
+
+    """
+        select_legend_hider: the function that the 'hide selected
+            gRNA legend' checkbox connects to.
+            This function hides the legend if the checkbox is true, shows it if false
+    """
+    def select_legend_hider(self):
+        # if the checkbox if checked, hide the legend and re-draw, otherwise show and re-draw
+        if self.hide_selected_legend.isChecked():
+            self.selected_grnas_graph.canvas.axes.legend().set_visible(False)
+            self.selected_grnas_graph.canvas.draw()
+        else:
+            self.selected_grnas_graph.canvas.axes.legend().set_visible(True)
+            self.selected_grnas_graph.canvas.draw()
 
     """
         graph_selected_grans: this function will graph the data from the
@@ -80,8 +104,9 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                     x1[temp_id].append(float(self.grna_data[seed][i][2]))
                     y1[temp_id].append(float(self.grna_data[seed][i][4]))
 
-        x_line = [.05, .2]
-        y_line = [0, 1.05]
+        x_line = self.get_x_coords()
+        if x_line == -1:
+            return
 
         self.selected_grnas_graph.canvas.axes.clear()
 
@@ -101,7 +126,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             counter += 1
 
         # graph the red line
-        self.selected_grnas_graph.canvas.axes.plot(x_line, y_line, color='black')
+        self.selected_grnas_graph.canvas.axes.plot(x_line, DEFAULT_Y_COORD, color='black')
 
         
         # set the rest of the settings for the graph
@@ -115,6 +140,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.selected_grnas_graph.canvas.axes.set_xlabel('Off-Target Score')
         self.selected_grnas_graph.canvas.axes.set_ylabel('Phylogenetic Distance')
         self.selected_grnas_graph.canvas.draw()
+        self.hide_selected_legend.setEnabled(True)
 
     """
         prepare the data and launch the select grnas window
@@ -134,11 +160,28 @@ class CASPER_VIP(QtWidgets.QMainWindow):
     def launch(self):
         self.show()
 
+    # clears just the selected graph -  also sets the checkbox to false
+    def clear_total_graph(self):
+        self.hide_total_legend.setChecked(False)
+        self.total_grnas_graph.canvas.axes.clear()
+        self.total_grnas_graph.canvas.draw()
+        self.hide_total_legend.setEnabled(False)
+
+    # clears just the selected graph -  also sets the checkbox to false
+    def clear_selected_graph(self):
+        self.hide_selected_legend.setChecked(False)
+        self.selected_grnas_graph.canvas.axes.clear()
+        self.selected_grnas_graph.canvas.draw()
+        self.hide_selected_legend.setEnabled(False)
+
     """
         go_back: hide the current window and show the main window again
     """
     def go_back(self):
         GlobalSettings.mainWindow.show()
+        self.x_coord_line.setText(DEFAULT_X_COORD)
+        self.clear_total_graph()
+        self.clear_selected_graph()
         self.hide()
 
     """
@@ -186,12 +229,12 @@ class CASPER_VIP(QtWidgets.QMainWindow):
                 buf = item.split(',')
 
                 if len(buf) > 1:
-                    tempTuple = (buf[0], buf[1], buf[2], buf[3])
+                    tempTuple = (buf[0], buf[1], buf[2], buf[3], buf[4], buf[5], buf[6], buf[7], buf[8])
                     if buf[0] not in self.seq_data:
                         self.seq_data[buf[0]] = list()
                     
                     # store the relatedness data for the organism
-                    if tempTuple[2] not in self.org_relate_data and tempTuple[2] != 'Org' and tempTuple[2] != '':
+                    if tempTuple[2] not in self.org_relate_data and tempTuple[2] != 'Organism' and tempTuple[2] != '':
                         self.org_relate_data[tempTuple[2]] = float(tempTuple[3])
                     
                     self.seq_data[buf[0]].append(tempTuple)
@@ -199,12 +242,66 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         except Exception as e:
             print(e)
             fp.close()
-            return
+            QtWidgets.QMessageBox.question(self, "Error!",
+                                           "The CSV file could not be parsed. Please make sure to submit a CSV file generated by the Off-Targeting tool.",
+                                           QtWidgets.QMessageBox.Ok)
+            return -1
         # now close the file when its finally done
         fp.close()
         # only show the graph is the user clicked on analyze
         if show_graph:
             self.plot_whole_graph()
+
+    """
+        get_x_coords: this function pulls out the x-coordinates about the editable box 
+        Returns: a list: [first x coord, second x coord]
+    """
+    def get_x_coords(self):
+        # split the data and make sure there's 2 items
+        coords = self.x_coord_line.text().split(',')
+        if len(coords) != 2:
+            QtWidgets.QMessageBox.question(self, "Error!",
+                                           "Please follow the correct format for the X coordinates. It must be: <x1,x2>.",
+                                           QtWidgets.QMessageBox.Ok)
+            self.x_coord_line.setText(DEFAULT_X_COORD)
+            return -1
+
+        # try and convert both numbers from strings to float
+        ret_list = list()
+        try:
+            for item in coords:
+                x = float(item)
+
+                # make sure each item is 0 <= x <= 1
+                if x > 1 or x < 0:
+                    QtWidgets.QMessageBox.question(self, "Error!",
+                                           "Please make sure that each value for X is no greater than 1, and no smaller than 0. So 0 <= x <= 1",
+                                           QtWidgets.QMessageBox.Ok)
+                    self.x_coord_line.setText(DEFAULT_X_COORD)
+                    return -1
+                ret_list.append(x)
+
+        # if trying to convert to a float fails, throw an error
+        except ValueError:
+            QtWidgets.QMessageBox.question(self, "Error!",
+                                           "Please make sure only decimal numbers are given!",
+                                           QtWidgets.QMessageBox.Ok)
+            self.x_coord_line.setText(DEFAULT_X_COORD)
+            return -1
+        return ret_list
+
+    """
+        total_legend_hider: hides the legend in the total_grna_graph in Tab 1
+        Hides the legend if the checkbox is checked, shows it if not.
+    """
+    def total_legend_hider(self):
+        # if the checkbox if checked, hide the legend and re-draw, otherwise show and re-draw
+        if self.hide_total_legend.isChecked():
+            self.total_grnas_graph.canvas.axes.legend().set_visible(False)
+            self.total_grnas_graph.canvas.draw()
+        else:
+            self.total_grnas_graph.canvas.axes.legend().set_visible(True)
+            self.total_grnas_graph.canvas.draw()
 
     """
         plot_whole_graph: this function plots everything from the CSV file. Similar to the first graph in the excel sheet
@@ -215,8 +312,9 @@ class CASPER_VIP(QtWidgets.QMainWindow):
 
         # this is the red line from the excel spread sheet
         # for now, it's hard coded, but eventually the user will select this as well
-        x_line = [.05, .2]
-        y_line = [0, 1.05]
+        x_line = self.get_x_coords()
+        if x_line == -1:
+            return
 
         # go through and get the data that we are plotting
         for seed in self.seq_data:
@@ -242,7 +340,7 @@ class CASPER_VIP(QtWidgets.QMainWindow):
             
 
         # graph the red line
-        self.total_grnas_graph.canvas.axes.plot(x_line, y_line, color='black')
+        self.total_grnas_graph.canvas.axes.plot(x_line, DEFAULT_Y_COORD, color='black')
 
         # set the rest of the settings for the graph
         self.total_grnas_graph.canvas.axes.legend()
@@ -255,3 +353,4 @@ class CASPER_VIP(QtWidgets.QMainWindow):
         self.total_grnas_graph.canvas.axes.set_xlabel('Off-Target Score')
         self.total_grnas_graph.canvas.axes.set_ylabel('Phylogenetic Distance')
         self.total_grnas_graph.canvas.draw()
+        self.hide_total_legend.setEnabled(True)

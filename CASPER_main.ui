@@ -702,7 +702,7 @@
      <x>0</x>
      <y>0</y>
      <width>942</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -843,7 +843,7 @@
   </action>
   <action name="actionUpload_New_Endonuclease">
    <property name="text">
-    <string>Upload New Endonuclease...</string>
+    <string>Upload New Endonuclease</string>
    </property>
   </action>
   <action name="actionChange_Directory">
@@ -893,19 +893,19 @@
   </action>
   <action name="actionCASPER_VIP">
    <property name="text">
-    <string>CASPER VIP</string>
+    <string>CASPERvip</string>
    </property>
   </action>
   <action name="actionMetaGenome_Creator">
    <property name="text">
-    <string>MetaGenome Creator</string>
+    <string>Metagenome Creator</string>
    </property>
   </action>
  </widget>
  <resources/>
  <connections/>
  <buttongroups>
-  <buttongroup name="type_of_annotation_file"/>
   <buttongroup name="refseq_genbank_buttonGroup"/>
+  <buttongroup name="type_of_annotation_file"/>
  </buttongroups>
 </ui>

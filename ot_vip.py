@@ -5,6 +5,9 @@ import Algorithms
 from functools import partial
 from OT_parser import ot_parser
 
+LIB_PATH_DEFAULT = "Please browse to choose a CSV Library File"
+FASTA_LINE_DEFAULT = "Please browse to choose an aligned FASTA file"
+OUTPUT_FILE_DEFAULT = "Please choose a file name for output. (leave out the .csv)"
 
 """
     ot_vip: this window is used in the CASPER VIP window
@@ -23,7 +26,8 @@ class ot_vip(QtWidgets.QDialog):
         # button connections
         self.cancel_button.clicked.connect(self.cancel_function)
         self.start_button.clicked.connect(self.start_function)
-        self.browse_button.clicked.connect(self.browse_function)
+        self.browse_button_lib.clicked.connect(self.browse_function_lib)
+        self.browse_button_fasta.clicked.connect(self.browse_function_fasta)
 
         # variables
         self.temp_compressed_file = GlobalSettings.CSPR_DB + os.path.sep + 'temp_comp.txt'
@@ -43,7 +47,7 @@ class ot_vip(QtWidgets.QDialog):
         self.meta_table.horizontalHeader().setSectionsClickable(True)
         self.meta_table.setSelectionBehavior(QtWidgets.QAbstractItemView.SelectRows)
         self.meta_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
-        self.meta_table.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
+        self.meta_table.setSelectionMode(QtWidgets.QAbstractItemView.SingleSelection)
         self.meta_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
 
     """
@@ -94,9 +98,27 @@ class ot_vip(QtWidgets.QDialog):
         self.show()
 
     """
-        browse_function: this function allows the user to search for a CSV file
+        browse_function_faste: this function allows the user to browse for an aligned fasta file
     """
-    def browse_function(self):
+    def browse_function_fasta(self):
+        filed = QtWidgets.QFileDialog()
+        myFile = QtWidgets.QFileDialog.getOpenFileName(filed, "Choose an aligned FASTA file")
+
+        if not myFile[0].endswith('.fasta'):
+            QtWidgets.QMessageBox.question(self, "Wrong type of file selected",
+                                           "Please only select a FASTA file!",
+                                           QtWidgets.QMessageBox.Ok)
+            self.fasta_line.setText(FASTA_LINE_DEFAULT)
+            return
+
+        if myFile[0] != "":
+            self.fasta_line.setText(myFile[0])
+
+    """
+        browse_function: this function allows the user to search for a CSV lib file.
+        This function is for browsing for the CSV Lib file
+    """
+    def browse_function_lib(self):
         # get the file the user searched for
         filed = QtWidgets.QFileDialog()
         myFile = QtWidgets.QFileDialog.getOpenFileName(filed, "Choose a CSV Library File!")
@@ -106,7 +128,7 @@ class ot_vip(QtWidgets.QDialog):
             QtWidgets.QMessageBox.question(self, "Wrong type of file selected",
                                            "Please only select a CSV file!",
                                            QtWidgets.QMessageBox.Ok)
-            self.lib_path.setText("Please browse to choose a CSV Library File")
+            self.lib_path.setText(LIB_PATH_DEFAULT)
             return
 
         # update the lib_path if it's not empty
@@ -139,7 +161,6 @@ class ot_vip(QtWidgets.QDialog):
                     key_data = temp_list[1]
                     if key_data not in self.sequences:
                         self.sequences[key_data] = [temp_list[0], temp_list[1], temp_list[2], temp_list[3], temp_list[4], temp_list[5]]
-
                 buf = fp.readline()
         # excetpion for permission error
         except PermissionError:
@@ -154,7 +175,7 @@ class ot_vip(QtWidgets.QDialog):
             QtWidgets.QMessageBox.question(self, "Error",
                                            "This file could not be parsed by our program.\nPlease make sure that it is a CSV file from our Generate Library functionality with the 'Output All Data' option selected!",
                                            QtWidgets.QMessageBox.Ok)
-            self.lib_path.setText("Please browse to choose a CSV Library File")
+            self.lib_path.setText(LIB_PATH_DEFAULT)
             fp.close()
             return
         fp.close()
@@ -185,7 +206,9 @@ class ot_vip(QtWidgets.QDialog):
                 self.proc_running = False
                 self.process.kill()
 
-        self.lib_path.setText("Please browse to choose a CSV Library File")
+        self.lib_path.setText(LIB_PATH_DEFAULT)
+        self.fasta_line.setText(FASTA_LINE_DEFAULT)
+        self.output_file_edit.setText(OUTPUT_FILE_DEFAULT)
         self.meta_table.clearContents()
         self.progressBar.setValue(0)
         self.meta_table.setRowCount(0)
@@ -206,9 +229,22 @@ class ot_vip(QtWidgets.QDialog):
             return
 
         # make sure they've chosen a library file
-        if self.lib_path.text() == "Please browse to choose a CSV Library File":
+        if self.lib_path.text() == LIB_PATH_DEFAULT:
             QtWidgets.QMessageBox.question(self, "Error",
                         "Please choose a CSV file created by Generate Library before continuing.",
+                        QtWidgets.QMessageBox.Ok)
+            return
+
+        # make sure they've chosen a file name
+        if self.output_file_edit.text() == OUTPUT_FILE_DEFAULT or self.output_file_edit.text().endswith('.csv'):
+            QtWidgets.QMessageBox.question(self, "Error",
+                        "Please choose an output file name! (Leave the .csv out)",
+                        QtWidgets.QMessageBox.Ok)
+            return
+
+        if self.fasta_line.text() == FASTA_LINE_DEFAULT:
+            QtWidgets.QMessageBox.question(self, "Error",
+                        "Please choose an aligned fasta file!",
                         QtWidgets.QMessageBox.Ok)
             return
 
@@ -217,6 +253,8 @@ class ot_vip(QtWidgets.QDialog):
 
     """
         run_OT: this function builds the commands and actually runs OT
+        Parameters:
+            cspr_file_path: the path to the cspr file
     """
     def run_OT(self, cspr_file_path):
         self.perc = False
@@ -231,7 +269,8 @@ class ot_vip(QtWidgets.QDialog):
             self.process.kill()
 
             # run the OT parser, and the close out the window
-            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt', cspr_file_path)
+            self.otParser.appended_file = GlobalSettings.CSPR_DB + os.path.sep + self.output_file_edit.text() + '.csv'
+            self.otParser.get_data(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt', cspr_file_path, self.fasta_line.text(), self.sequences)
             os.remove(GlobalSettings.CSPR_DB + os.path.sep + 'temp_off.txt')
             self.cancel_function()
 

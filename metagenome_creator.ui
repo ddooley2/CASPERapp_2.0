@@ -67,20 +67,20 @@
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>60</x>
-     <y>30</y>
-     <width>221</width>
+     <x>110</x>
+     <y>40</y>
+     <width>121</width>
      <height>16</height>
     </rect>
    </property>
    <property name="text">
-    <string>FNA/Fasta File Table</string>
+    <string>.fna/.fasta File Table</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="org_name">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>500</x>
      <y>120</y>
      <width>231</width>
      <height>20</height>
@@ -100,13 +100,13 @@
     </rect>
    </property>
    <property name="text">
-    <string>Organism Name:</string>
+    <string>Metagenome  Name:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="org_code">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>500</x>
      <y>160</y>
      <width>231</width>
      <height>20</height>
@@ -126,13 +126,13 @@
     </rect>
    </property>
    <property name="text">
-    <string>Organism Code:</string>
+    <string>Metagenome Code:</string>
    </property>
   </widget>
   <widget class="QLineEdit" name="num_of_orgs">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>500</x>
      <y>200</y>
      <width>231</width>
      <height>20</height>
@@ -178,14 +178,14 @@
     </rect>
    </property>
    <property name="text">
-    <string>Sequencer Progrss:</string>
+    <string>Sequencer Progress:</string>
    </property>
   </widget>
   <widget class="QPushButton" name="ncbi_searcher">
    <property name="geometry">
     <rect>
-     <x>280</x>
-     <y>20</y>
+     <x>350</x>
+     <y>60</y>
      <width>111</width>
      <height>23</height>
     </rect>
@@ -213,8 +213,8 @@
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>560</x>
-     <y>30</y>
+     <x>580</x>
+     <y>40</y>
      <width>111</width>
      <height>16</height>
     </rect>

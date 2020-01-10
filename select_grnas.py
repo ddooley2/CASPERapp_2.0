@@ -26,9 +26,9 @@ class sel_grnas(QtWidgets.QMainWindow):
         #--------------end variables-------------------------
 
         #--------------table stuff---------------------------
-        self.grna_table.setColumnCount(5)
+        self.grna_table.setColumnCount(10)
         self.grna_table.setShowGrid(False)
-        self.grna_table.setHorizontalHeaderLabels(['GRNA ID', 'Sequence', 'Organism', 'Relatedness Score', 'Select'])
+        self.grna_table.setHorizontalHeaderLabels(['gRNA ID', 'Sequence', 'Number of Hits', 'Select', 'Off-Target Score', 'Gene', 'Location', 'PAM', 'Strand', 'On-Target Score'])
         self.grna_table.horizontalHeader().setSectionsClickable(True)
         self.grna_table.setEditTriggers(QtWidgets.QAbstractItemView.NoEditTriggers)
         self.grna_table.setSizeAdjustPolicy(QtWidgets.QAbstractScrollArea.AdjustToContents)
@@ -36,7 +36,7 @@ class sel_grnas(QtWidgets.QMainWindow):
         self.grna_table.setSelectionMode(QtWidgets.QAbstractItemView.MultiSelection)
         self.grna_table.resizeColumnsToContents()
 
-        self.switcher = [1,1,1,1,1]
+        self.switcher = [1,1,1,1,1,1,1,1,1,1]
         self.grna_table.horizontalHeader().sectionClicked.connect(self.sort_table)
         #--------------end table stuff-----------------------
 
@@ -74,7 +74,7 @@ class sel_grnas(QtWidgets.QMainWindow):
 
         # go through for every checkbox
         for ckbox in self.check_boxes:
-            if ckbox[4].isChecked():
+            if ckbox[3].isChecked():
                 # set the error checker
                 is_one_checked = True
 
@@ -114,32 +114,47 @@ class sel_grnas(QtWidgets.QMainWindow):
 
                 # get the widgets
                 tab_id = QtWidgets.QTableWidgetItem()
-                tab_sequence = QtWidgets.QTableWidgetItem() 
-                tab_org = QtWidgets.QTableWidgetItem()   
-                tab_relate = QtWidgets.QTableWidgetItem()
+                tab_sequence = QtWidgets.QTableWidgetItem()
+                tab_hits = QtWidgets.QTableWidgetItem() 
                 ckbox = QtWidgets.QCheckBox()
+                tab_ot = QtWidgets.QTableWidgetItem()
+                tab_gene = QtWidgets.QTableWidgetItem()
+                tab_location = QtWidgets.QTableWidgetItem()
+                tab_pam = QtWidgets.QTableWidgetItem()
+                tab_strand = QtWidgets.QTableWidgetItem()
+                tab_onscore = QtWidgets.QTableWidgetItem()
 
                 # set the data we need
                 tab_id.setData(QtCore.Qt.EditRole, counter)
                 tab_sequence.setData(QtCore.Qt.EditRole, item)
-
+                tab_ot.setData(QtCore.Qt.EditRole, float(self.seq_data[item][0][1]))
+                tab_gene.setData(QtCore.Qt.EditRole, self.seq_data[item][0][4])
+                tab_location.setData(QtCore.Qt.EditRole, int(self.seq_data[item][0][5]))
+                tab_pam.setData(QtCore.Qt.EditRole, self.seq_data[item][0][6])
+                tab_strand.setData(QtCore.Qt.EditRole, self.seq_data[item][0][7])
+                tab_onscore.setData(QtCore.Qt.EditRole, int(self.seq_data[item][0][8]))
+                
                 # set the data based on whether or not the grna has a hit or not
                 if self.seq_data[item][0][1] == '0':
-                    tab_org.setData(QtCore.Qt.EditRole, 'No Hits')
-                    tab_relate.setData(QtCore.Qt.EditRole, 0)
+                    tab_hits.setData(QtCore.Qt.EditRole, 0)
                 else: 
-                    tab_org.setData(QtCore.Qt.EditRole, self.seq_data[item][0][2])
-                    tab_relate.setData(QtCore.Qt.EditRole, float(self.seq_data[item][0][3]))
+                    tab_hits.setData(QtCore.Qt.EditRole, int(len(self.seq_data[item])))
+                
 
                 # now set the items in the table
                 self.grna_table.setItem(row_index, 0, tab_id)
                 self.grna_table.setItem(row_index, 1, tab_sequence)
-                self.grna_table.setItem(row_index, 2, tab_org)
-                self.grna_table.setItem(row_index, 3, tab_relate)
+                self.grna_table.setItem(row_index, 2, tab_hits)
+                self.grna_table.setItem(row_index, 4, tab_ot)
+                self.grna_table.setItem(row_index, 5, tab_gene)
+                self.grna_table.setItem(row_index, 6, tab_location)
+                self.grna_table.setItem(row_index, 7, tab_pam)
+                self.grna_table.setItem(row_index, 8, tab_strand)
+                self.grna_table.setItem(row_index, 9, tab_onscore)
 
                 # store the checkbox and make sure it is in the list as well
-                self.grna_table.setCellWidget(row_index, 4, ckbox)
-                self.check_boxes.append((tab_id, tab_sequence, tab_org, tab_relate, ckbox))
+                self.grna_table.setCellWidget(row_index, 3, ckbox)
+                self.check_boxes.append((tab_id, tab_sequence, tab_hits, ckbox))
 
                 counter += 1
                 row_index += 1
