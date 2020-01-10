@@ -87,6 +87,9 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.rect_counter = 0
         self.counter = 0
 
+        #group button for chromo viewer
+        self.group_button.clicked.connect(self.group)
+
 
 
     def eventFilter(self, source, event):
@@ -322,20 +325,24 @@ class Multitargeting(QtWidgets.QMainWindow):
 
     #fill in chromo bar visualization
     def fill_Chromo_Text(self, info):
-        chromo_pos = {}
+        self.chromo_pos = {}
+        self.chromo_locs = {}
         self.seq_data = []
         self.positions.clear()
         chomonum = 0
         for chromo in info[self.chromo_seed.currentText()]:
             pos = []
+            locs = []
             for position in info[(self.chromo_seed.currentText())][chromo]:
                 self.seq_data.append(self.chromo_seed.currentText())
                 test1 = position/self.chromo_length[int(chromo)-1]
                 test1 = int(test1 * 485)
                 self.positions.append(test1)
                 pos.append(test1)
+                locs.append(position)
 
-            chromo_pos[chromo] = pos
+            self.chromo_pos[chromo] = pos
+            self.chromo_locs[chromo] = locs
             chomonum+=1
 
         i = 0
@@ -348,7 +355,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.bar_data.clear()
         ind = 0
         r = 0
-        for chromo in chromo_pos:
+        for chromo in self.chromo_pos:
             pen_blk = QtGui.QPen(QtCore.Qt.black)
             pen_red = QtGui.QPen(QtCore.Qt.red)
             pen_blk.setWidth(3)
@@ -374,7 +381,7 @@ class Multitargeting(QtWidgets.QMainWindow):
                 self.rects.append(rect)
                 self.bar_data.append([])
 
-            for k in sorted(chromo_pos[chromo]):
+            for k in sorted(self.chromo_pos[chromo]):
                 line = self.scene.addLine(k + 40, (i * 25) + 3 + 10 * i, k + 40, (i * 25) + 22 + 10 * i, pen_red)
                 self.bar_data[r].append(line)
                 self.bars.append(line)
@@ -681,6 +688,27 @@ class Multitargeting(QtWidgets.QMainWindow):
 
             del data[max_index]
         return data_ordered
+
+    def group(self):
+        print('grouping')
+        group = {}
+        dist_val = int(self.group_val_box.text())
+        for chromo in self.chromo_locs:
+            group[chromo] = []
+            counter = 0
+            i = 0
+            while i < len(self.chromo_locs[chromo]):
+                group[chromo].append([])
+                min_val = int(self.chromo_locs[chromo][i]) - dist_val
+                max_val = int(self.chromo_locs[chromo][i]) + dist_val
+                for pos_2 in self.chromo_locs[chromo]:
+                    if pos_2 <= max_val and pos_2 >= min_val:
+                        group[chromo][counter].append(pos_2)
+                        min_val = int(pos_2) - dist_val
+                        max_val = int(pos_2) + dist_val
+                i += len(group[chromo][counter])
+                counter += 1
+        print(group)
 
     #connects to view->CASPER to switch back to the main CASPER window
     def changeto_main(self):

@@ -148,6 +148,7 @@ class OffTarget(QtWidgets.QDialog):
             #split the input read based on '\n\ characters since the stdout read can read multiple lines at
             #once and is all read in as raw bytes
             line = str(p.readAllStandardOutput())
+            print(line)
             line = line[2:]
             line = line[:len(line)-1]
             for lines in filter(None,line.split(r'\r\n')):
