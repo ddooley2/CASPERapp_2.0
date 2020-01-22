@@ -322,6 +322,7 @@ class Multitargeting(QtWidgets.QMainWindow):
 
     #fill in chromo bar visualization
     def fill_Chromo_Text(self, info, dist=0):
+        self.group_val_box.clear()
         self.scene2 = QtWidgets.QGraphicsScene()
         self.graphicsView_2.setScene(self.scene2)
         self.chromo_pos = {}
@@ -357,6 +358,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.bar_data.clear()
         ind = 0
         r = 0
+        index=0
         for chromo in self.chromo_pos:
             pen_blk = QtGui.QPen(QtCore.Qt.black)
             pen_red = QtGui.QPen(QtCore.Qt.red)
@@ -410,7 +412,7 @@ class Multitargeting(QtWidgets.QMainWindow):
                         loc_2 = int(temp_2[0])
                         if temp[1:4] == sub_coords[1:4] or (loc_2 < (loc_1 + dist) and loc_2 > (loc_1 - dist) and temp[2:4] == sub_coords[2:4]):
                             found = True
-                            self.bar_coords[ind-1].append(temp)
+                            self.bar_coords[index-1].append(temp)
                             break
                     if found == True:
                         break
@@ -419,11 +421,11 @@ class Multitargeting(QtWidgets.QMainWindow):
                     self.bar_data[r].append(line)
                     self.bars[tuple(temp[1:4])]=line
                     self.bar_coords.append([temp]) #push x, y1, and y2 to this list
-                    ind += 1
+                    index+=1
+                ind += 1
                 num += 1
             i = i + 1
             r += 1
-
 
         #initialize chromo window to first repeat in first chromo
         if(self.arrow_option.isChecked()):
