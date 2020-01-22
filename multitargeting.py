@@ -57,7 +57,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.average_unique = 0
         self.average_rep = 0
         self.bar_coords = []
-        self.bars = []
+        self.bars = {}
         self.rects = []
         self.seed_id_seq_pair = {}
         self.positions = []
@@ -89,34 +89,40 @@ class Multitargeting(QtWidgets.QMainWindow):
 
         #group button for chromo viewer
         self.group_button.clicked.connect(self.group)
+        self.reset_chromo.clicked.connect(self.reset_chromo_viewer)
+        self.mouse_option.clicked.connect(self.mouse_enable)
+        self.arrow_option.clicked.connect(self.arrow_enable)
+        #Qt_FocusPolicy = Qt.StrongFocus
+        #self.setFocusPolicy(QtCore.Qt.StrongFocus)
+
 
 
 
     def eventFilter(self, source, event):
-        if (event.type() == QtCore.QEvent.MouseMove and source is self.graphicsView.viewport()):
+        if (event.type() == QtCore.QEvent.MouseMove and source is self.graphicsView.viewport() and self.mouse_option.isChecked()):
+            pen_bl = QtGui.QPen(QtCore.Qt.blue)
+            pen_bl.setWidth(3)
+            pen_red = QtGui.QPen(QtCore.Qt.red)
+            pen_red.setWidth(3)
+
             coord = self.graphicsView.mapToScene(event.pos())
-            first = True
             for i in self.bar_coords:
-                ind = i[0]
-                x = i[1]
-                y1 = i[2]
-                y2 = i[3]
-                dups = 0
+                x = i[0][1]
+                y1 = i[0][2]
+                y2 = i[0][3]
                 if ((coord.x() == x or coord.x() == x + 1 or coord.x() == x - 1) and (
                         coord.y() >= y1 and coord.y() <= y2)):
 
-                    listtemp = []
-                    for a in self.bar_coords:
-                        if(x == a[1] and y1 == a[2] and y2 == a[3]):
-                            listtemp.append(a)
-                            dups += 1
+                    tup = tuple([x, y1, y2])
+                    line = self.bars[tup]
+                    line.setPen(pen_bl)
+                    listtemp = i
+
                     self.scene2 = QtWidgets.QGraphicsScene()
                     self.graphicsView_2.setScene(self.scene2)
-                    #self.graphicsView_2.hide()
                     output = str()
                     i = 1
                     for item in listtemp:
-
                         ind = item[0]
                         seq = str(self.seq_data[ind])
                         seed_id = self.seed_id_seq_pair[seq]
@@ -130,14 +136,17 @@ class Multitargeting(QtWidgets.QMainWindow):
                                 temp[2]) + ' | SCR: ' + str(temp[3]) + ' | DIRA: ' + str(temp[4])
                         i += 1
                     text = self.scene2.addText(output)
-                    #self.graphicsView_2.adjustSize()
                     font = QtGui.QFont()
                     font.setBold(True)
                     font.setPointSize(9)
                     text.setFont(font)
                     text.setFont(font)
+                else:
+                    tup = tuple([x, y1, y2])
+                    line = self.bars[tup]
+                    line.setPen(pen_red)
 
-        elif (event.type() == QtCore.QEvent.KeyPress):
+        elif (event.type() == QtCore.QEvent.KeyPress and self.arrow_option.isChecked()):
             key = event.key()
 
             pen_bl = QtGui.QPen(QtCore.Qt.blue)
@@ -174,26 +183,13 @@ class Multitargeting(QtWidgets.QMainWindow):
                     for r in range(0, self.rect_counter):
                         self.counter += len(self.bar_data[r])
 
-
-
-
-
             line = self.bar_data[old_rect][old_bar]
             line.setPen(pen_red)
             line = self.bar_data[self.rect_counter][self.bar_counter]
             line.setPen(pen_bl)
 
-            i = self.bar_coords[self.counter]
-            x = i[1]
-            y1 = i[2]
-            y2 = i[3]
-            dups = 0
+            listtemp = self.bar_coords[self.counter]
 
-            listtemp = []
-            for a in self.bar_coords:
-                if (x == a[1] and y1 == a[2] and y2 == a[3]):
-                    listtemp.append(a)
-                    dups += 1
             self.scene2 = QtWidgets.QGraphicsScene()
             self.graphicsView_2.setScene(self.scene2)
             output = str()
@@ -320,15 +316,21 @@ class Multitargeting(QtWidgets.QMainWindow):
                     dic_info[temp1][repeat[0]].append(self.sq.decompress64(repeat[1]))
                 else:
                     dic_info[temp1][repeat[0]] = [self.sq.decompress64(repeat[1])]
+        self.info=dic_info
         self.chro_bar_create(dic_info)
         self.fill_Chromo_Text(dic_info)
 
     #fill in chromo bar visualization
-    def fill_Chromo_Text(self, info):
+    def fill_Chromo_Text(self, info, dist=0):
+        self.scene2 = QtWidgets.QGraphicsScene()
+        self.graphicsView_2.setScene(self.scene2)
         self.chromo_pos = {}
         self.chromo_locs = {}
         self.seq_data = []
         self.positions.clear()
+        self.bar_counter = 0
+        self.rect_counter = 0
+        self.counter = 0
         chomonum = 0
         for chromo in info[self.chromo_seed.currentText()]:
             pos = []
@@ -350,7 +352,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.scene.activeWindow()
         self.graphicsView.setScene(self.scene)
         self.bar_coords.clear() #clear bar_coords list before creating visual
-        self.bars.clear()
+        self.bars = {}
         self.rects.clear()
         self.bar_data.clear()
         ind = 0
@@ -380,65 +382,81 @@ class Multitargeting(QtWidgets.QMainWindow):
                 rect = self.scene.addRect(40, (i * 25)+10*i, 525, 25, pen_blk)
                 self.rects.append(rect)
                 self.bar_data.append([])
+            found = False
+            self.chromo_pos[chromo] = sorted(self.chromo_pos[chromo])
 
-            for k in sorted(self.chromo_pos[chromo]):
-                line = self.scene.addLine(k + 40, (i * 25) + 3 + 10 * i, k + 40, (i * 25) + 22 + 10 * i, pen_red)
-                self.bar_data[r].append(line)
-                self.bars.append(line)
+            num = 0
+            while num < len(self.chromo_pos[chromo]):
+                found = False
+                k = self.chromo_pos[chromo][num]
                 temp = [] #used for storing coordinates and saving them in self.bar_coords[]
                 temp.append(ind) #index value
                 temp.append(k+40) #x value
                 temp.append((i*25)+3+10*i) #y1
                 temp.append((i*25)+22+10*i) #y2
-                self.bar_coords.append(temp) #push x, y1, and y2 to this list
-                ind += 1
+                ind_1 = ind
+                seq_1 = str(self.seq_data[ind_1])
+                seed_id_1 = self.seed_id_seq_pair[seq_1]
+                temp_1 = self.parser.dec_tup_data[seed_id_1]
+                temp_1 = temp_1[ind]
+                loc_1 = int(temp_1[0])
+                for coords in self.bar_coords:
+                    for sub_coords in coords:
+                        ind_2 = sub_coords[0]
+                        seq_2 = str(self.seq_data[ind_2])
+                        seed_id_2 = self.seed_id_seq_pair[seq_2]
+                        temp_2 = self.parser.dec_tup_data[seed_id_2]
+                        temp_2 = temp_2[ind_2]
+                        loc_2 = int(temp_2[0])
+                        if temp[1:4] == sub_coords[1:4] or (loc_2 < (loc_1 + dist) and loc_2 > (loc_1 - dist) and temp[2:4] == sub_coords[2:4]):
+                            found = True
+                            self.bar_coords[ind-1].append(temp)
+                            break
+                    if found == True:
+                        break
+                if found != True:
+                    line = self.scene.addLine(k + 40, (i * 25) + 3 + 10 * i, k + 40, (i * 25) + 22 + 10 * i, pen_red)
+                    self.bar_data[r].append(line)
+                    self.bars[tuple(temp[1:4])]=line
+                    self.bar_coords.append([temp]) #push x, y1, and y2 to this list
+                    ind += 1
+                num += 1
             i = i + 1
             r += 1
 
 
         #initialize chromo window to first repeat in first chromo
-        pen_bl = QtGui.QPen(QtCore.Qt.blue)
-        pen_bl.setWidth(3)
-        line = self.bar_data[0][0]
-        line.setPen(pen_bl)
+        if(self.arrow_option.isChecked()):
+            pen_bl = QtGui.QPen(QtCore.Qt.blue)
+            pen_bl.setWidth(3)
 
-        i = self.bar_coords[0]
-        x = i[1]
-        y1 = i[2]
-        y2 = i[3]
-        dups = 0
+            line = self.bar_data[0][0]
+            line.setPen(pen_bl)
 
-        listtemp = []
-        for a in self.bar_coords:
-            if (x == a[1] and y1 == a[2] and y2 == a[3]):
-                listtemp.append(a)
-                dups += 1
-        self.scene2 = QtWidgets.QGraphicsScene()
-        self.graphicsView_2.setScene(self.scene2)
-        output = str()
-        i = 1
-        for item in listtemp:
-            ind = item[0]
-            seq = str(self.seq_data[ind])
+            listtemp = self.bar_coords[0]
 
-            seed_id = self.seed_id_seq_pair[seq]
-
-            temp = self.parser.dec_tup_data[seed_id]
-            temp = temp[ind]
-            if len(listtemp) > 1 and i < len(listtemp):
-                output += 'Location: ' + str(temp[0]) + ' | Seq: ' + str(temp[1]) + ' | PAM: ' + str(
-                    temp[2]) + ' | SCR: ' + str(temp[3]) + ' | DIRA: ' + str(temp[4]) + '\n'
-            else:
-                output += 'Location: ' + str(temp[0]) + ' | Seq: ' + str(temp[1]) + ' | PAM: ' + str(
-                    temp[2]) + ' | SCR: ' + str(temp[3]) + ' | DIRA: ' + str(temp[4])
-            i += 1
-        text = self.scene2.addText(output)
-        font = QtGui.QFont()
-        font.setBold(True)
-        font.setPointSize(9)
-        text.setFont(font)
-        text.setFont(font)
-
+            output = str()
+            i = 1
+            for item in listtemp:
+                ind = item[0]
+                seq = str(self.seq_data[ind])
+                seed_id = self.seed_id_seq_pair[seq]
+                temp = self.parser.dec_tup_data[seed_id]
+                temp = temp[ind]
+                if len(listtemp) > 1 and i < len(listtemp):
+                    output += 'Location: ' + str(temp[0]) + ' | Seq: ' + str(temp[1]) + ' | PAM: ' + str(
+                        temp[2]) + ' | SCR: ' + str(temp[3]) + ' | DIRA: ' + str(temp[4]) + '\n'
+                else:
+                    output += 'Location: ' + str(temp[0]) + ' | Seq: ' + str(temp[1]) + ' | PAM: ' + str(
+                        temp[2]) + ' | SCR: ' + str(temp[3]) + ' | DIRA: ' + str(temp[4])
+                i += 1
+            text = self.scene2.addText(output)
+            font = QtGui.QFont()
+            font.setBold(True)
+            font.setPointSize(9)
+            text.setFont(font)
+            text.setFont(font)
+        self.graphicsView.setFocus()
 
     #creates bar graph num of repeats vs. chromsome
     #this graphs is connected to the repeats_vs_chromo.py file
@@ -690,25 +708,63 @@ class Multitargeting(QtWidgets.QMainWindow):
         return data_ordered
 
     def group(self):
-        print('grouping')
-        group = {}
-        dist_val = int(self.group_val_box.text())
-        for chromo in self.chromo_locs:
-            group[chromo] = []
-            counter = 0
-            i = 0
-            while i < len(self.chromo_locs[chromo]):
-                group[chromo].append([])
-                min_val = int(self.chromo_locs[chromo][i]) - dist_val
-                max_val = int(self.chromo_locs[chromo][i]) + dist_val
-                for pos_2 in self.chromo_locs[chromo]:
-                    if pos_2 <= max_val and pos_2 >= min_val:
-                        group[chromo][counter].append(pos_2)
-                        min_val = int(pos_2) - dist_val
-                        max_val = int(pos_2) + dist_val
-                i += len(group[chromo][counter])
-                counter += 1
-        print(group)
+        self.fill_Chromo_Text(self.info, dist=int(self.group_val_box.text()))
+
+    def reset_chromo_viewer(self):
+        self.fill_Chromo_Text(self.info, dist=0)
+        self.group_val_box.clear()
+
+    def mouse_enable(self):
+        self.graphicsView.setFocus()
+        pen_red = QtGui.QPen(QtCore.Qt.red)
+        pen_red.setWidth(3)
+        self.scene2 = QtWidgets.QGraphicsScene()
+        self.graphicsView_2.setScene(self.scene2)
+        for i in self.bar_coords:
+            x = i[0][1]
+            y1 = i[0][2]
+            y2 = i[0][3]
+            tup = tuple([x, y1, y2])
+            line = self.bars[tup]
+            line.setPen(pen_red)
+
+    def arrow_enable(self):
+        self.graphicsView.setFocus()
+
+        pen_bl = QtGui.QPen(QtCore.Qt.blue)
+        pen_bl.setWidth(3)
+
+        self.bar_counter = 0
+        self.rect_counter = 0
+        self.counter = 0
+        line = self.bar_data[self.rect_counter][self.bar_counter]
+        line.setPen(pen_bl)
+        listtemp = self.bar_coords[self.counter]
+        self.scene2 = QtWidgets.QGraphicsScene()
+        self.graphicsView_2.setScene(self.scene2)
+        output = str()
+        i = 1
+        for item in listtemp:
+            ind = item[0]
+            seq = str(self.seq_data[ind])
+
+            seed_id = self.seed_id_seq_pair[seq]
+
+            temp = self.parser.dec_tup_data[seed_id]
+            temp = temp[ind]
+            if len(listtemp) > 1 and i < len(listtemp):
+                output += 'Location: ' + str(temp[0]) + ' | Seq: ' + str(temp[1]) + ' | PAM: ' + str(
+                    temp[2]) + ' | SCR: ' + str(temp[3]) + ' | DIRA: ' + str(temp[4]) + '\n'
+            else:
+                output += 'Location: ' + str(temp[0]) + ' | Seq: ' + str(temp[1]) + ' | PAM: ' + str(
+                    temp[2]) + ' | SCR: ' + str(temp[3]) + ' | DIRA: ' + str(temp[4])
+            i += 1
+        text = self.scene2.addText(output)
+        font = QtGui.QFont()
+        font.setBold(True)
+        font.setPointSize(9)
+        text.setFont(font)
+        text.setFont(font)
 
     #connects to view->CASPER to switch back to the main CASPER window
     def changeto_main(self):

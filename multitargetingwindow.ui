@@ -323,10 +323,10 @@
    <widget class="QLabel" name="label_5">
     <property name="geometry">
      <rect>
-      <x>790</x>
+      <x>890</x>
       <y>740</y>
-      <width>381</width>
-      <height>41</height>
+      <width>191</width>
+      <height>21</height>
      </rect>
     </property>
     <property name="text">
@@ -433,9 +433,51 @@
      <rect>
       <x>730</x>
       <y>740</y>
-      <width>31</width>
+      <width>71</width>
       <height>21</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="reset_chromo">
+    <property name="geometry">
+     <rect>
+      <x>810</x>
+      <y>740</y>
+      <width>41</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Reset</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="mouse_option">
+    <property name="geometry">
+     <rect>
+      <x>1100</x>
+      <y>740</y>
+      <width>82</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Mouse Hover</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="arrow_option">
+    <property name="geometry">
+     <rect>
+      <x>1200</x>
+      <y>740</y>
+      <width>82</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Arrow Keys</string>
     </property>
    </widget>
   </widget>
