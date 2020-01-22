@@ -264,8 +264,6 @@ class Multitargeting(QtWidgets.QMainWindow):
         for i in temp:
             i = i.strip('.')
             temp1.append(i)
-            print(i)
-        print(temp1)
         self.endo_drop.addItems(temp1)
 
     def make_graphs(self):
@@ -293,6 +291,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.bar_seeds_vs_repeats()
         self.fill_min_max()
         #self.chro_bar_data()
+        self.group_val_box.clear()
         self.nbr_seq.setText(str(len(self.parser.seeds)))
         self.avg_rep.setText(str(self.average))
         self.med_rep.setText(str(self.median))
@@ -319,10 +318,10 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.info=dic_info
         self.chro_bar_create(dic_info)
         self.fill_Chromo_Text(dic_info)
+        self.group_val_box.clear()
 
     #fill in chromo bar visualization
     def fill_Chromo_Text(self, info, dist=0):
-        self.group_val_box.clear()
         self.scene2 = QtWidgets.QGraphicsScene()
         self.graphicsView_2.setScene(self.scene2)
         self.chromo_pos = {}
