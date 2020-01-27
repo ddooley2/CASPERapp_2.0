@@ -42,7 +42,6 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.chromo_seed.currentIndexChanged.connect(self.chro_bar_data)
         self.Analyze_Button.clicked.connect(self.make_graphs)
 
-
         #go back to main button
         self.back_button.clicked.connect(self.go_back)
 
@@ -94,9 +93,6 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.arrow_option.clicked.connect(self.arrow_enable)
         #Qt_FocusPolicy = Qt.StrongFocus
         #self.setFocusPolicy(QtCore.Qt.StrongFocus)
-
-
-
 
     def eventFilter(self, source, event):
         if (event.type() == QtCore.QEvent.MouseMove and source is self.graphicsView.viewport() and self.mouse_option.isChecked()):
@@ -282,6 +278,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.parser.fileName = file
         print(self.endo_drop.currentText())
         self.parser.read_repeats(self.endo_drop.currentText())
+        self.parser.read_chromesome(self.endo_drop.currentText())
         self.parser.read_first_lines()
         self.chromo_length = self.parser.karystatsList
 
@@ -293,6 +290,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         #self.chro_bar_data()
         self.group_val_box.clear()
         self.nbr_seq.setText(str(len(self.parser.seeds)))
+        self.nbr_unq.setText(str(self.parser.uniq_seq_count()))
         self.avg_rep.setText(str(self.average))
         self.med_rep.setText(str(self.median))
         self.mode_rep.setText(str(self.mode))

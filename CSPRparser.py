@@ -33,6 +33,8 @@ class CSPRparser:
         #file path variable
         self.fileName = inputFileName
 
+        self.unique_targets = 0
+
     # this is the parser that is used for the gen_lib window
     # it returns a list of lists, essentially all of the chromosomes in the file, and their data
     # to make it faster, this now uses read_targets
@@ -48,6 +50,7 @@ class CSPRparser:
             retDict[gene] = list()
             retDict[gene] = self.read_targets('', (genDict[gene][0], genDict[gene][1], genDict[gene][2]), endo)
         return retDict
+
     #this function reads the first 3 lines of the file: also stores the karyStats in a list of ints
     def read_first_lines(self):
         fileStream = open(self.fileName, 'r')
@@ -110,7 +113,7 @@ class CSPRparser:
 
 #this function reads all of the chromosomes in the file
 #stores the data into a list of lists. So the line starting with '>' is the first index of each sub list
-    def read_chromesome(self):
+    def read_chromesome(self, endoChoice):
         self.chromesomeList.clear()
         tempList = list()
         fileStream = open(self.fileName, 'r')
@@ -138,12 +141,12 @@ class CSPRparser:
                     tempList = []
                     break
                 else: #else decompress the data, and append it to the list
-                    bufferString = self.seqTrans.decompress_csf_tuple(bufferString)
+                    bufferString = self.seqTrans.decompress_csf_tuple(bufferString, endo=endoChoice)
                     tempList.append(bufferString)
                     #print(bufferString)
                     bufferString = fileStream.readline()
         fileStream.close()
-        print(self.chromesomeList)
+
 ########################################################################################################
 #    this function reads just the repeats
 #    it stores this data in 2 dictionaries:
@@ -392,6 +395,7 @@ class CSPRparser:
                 index += 2
             split_info.clear()
         """
+
     #this function just reads the whole file
     def read_all(self):
         print("Reading First Lines.")
@@ -447,7 +451,27 @@ class CSPRparser:
 
         return retList
 
+    def uniq_seq_count(self):
+        rep_seq = []
+        chromo_seq = []
+        self.unique_targets = 0
 
+        for r in self.dec_tup_data:
+            for i in self.dec_tup_data[r]:
+                rep_seq.append(str(i[1]))
+
+        for chromo in self.chromesomeList:
+            for data in chromo:
+                if len(data) == 6:
+                    chromo_seq.append(str(data[1]))
+
+        rep_seq = list(dict.fromkeys(rep_seq))
+        chromo_seq = list(dict.fromkeys(chromo_seq))
+        self.unique_targets = len(chromo_seq)
+        for seq in rep_seq:
+            if seq in chromo_seq:
+                self.unique_targets -= 1
+        return self.unique_targets
 
 
 # this is testing code. show's how popParser function works
