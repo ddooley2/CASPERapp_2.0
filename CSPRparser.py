@@ -452,25 +452,11 @@ class CSPRparser:
         return retList
 
     def uniq_seq_count(self):
-        rep_seq = []
-        chromo_seq = []
         self.unique_targets = 0
-
-        for r in self.dec_tup_data:
-            for i in self.dec_tup_data[r]:
-                rep_seq.append(str(i[1]))
-
         for chromo in self.chromesomeList:
             for data in chromo:
                 if len(data) == 6:
-                    chromo_seq.append(str(data[1]))
-
-        rep_seq = list(dict.fromkeys(rep_seq))
-        chromo_seq = list(dict.fromkeys(chromo_seq))
-        self.unique_targets = len(chromo_seq)
-        for seq in rep_seq:
-            if seq in chromo_seq:
-                self.unique_targets -= 1
+                    self.unique_targets+=1
         return self.unique_targets
 
 

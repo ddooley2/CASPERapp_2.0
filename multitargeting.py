@@ -2,7 +2,6 @@ import os
 from PyQt5 import QtWidgets, Qt, QtGui, QtCore, uic
 import GlobalSettings
 import operator
-import pyqtgraph as pg
 from PyQt5.QtChart import (QBarCategoryAxis,QBarSet, QChartView, QBarSeries,QChart,QLineSeries, QValueAxis)
 from PyQt5.QtGui import QPainter, QBrush, QPen
 #import PyQt5
@@ -213,7 +212,7 @@ class Multitargeting(QtWidgets.QMainWindow):
             text.setFont(font)
         event.accept()
 
-        return QtGui.QWidget.eventFilter(self, source, event)
+        return Qt.QWidget.eventFilter(self, source, event)
 
     def launch(self,path):
         os.chdir(path)
