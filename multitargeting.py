@@ -40,6 +40,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.min_chromo.currentIndexChanged.connect(self.fill_seed_id_chrom)
         self.chromo_seed.currentIndexChanged.connect(self.chro_bar_data)
         self.Analyze_Button.clicked.connect(self.make_graphs)
+        self.export_button.clicked.connect(self.export)
 
         #go back to main button
         self.back_button.clicked.connect(self.go_back)
@@ -324,6 +325,7 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.chromo_pos = {}
         self.chromo_locs = {}
         self.seq_data = []
+        self.export_data = []
         self.positions.clear()
         self.bar_counter = 0
         self.rect_counter = 0
@@ -409,6 +411,12 @@ class Multitargeting(QtWidgets.QMainWindow):
                         if temp[1:4] == sub_coords[1:4] or (loc_2 < (loc_1 + dist) and loc_2 > (loc_1 - dist) and temp[2:4] == sub_coords[2:4]):
                             found = True
                             self.bar_coords[index-1].append(temp)
+
+                            exp = temp
+                            exp.append(loc_1)
+                            exp.append(seq_1)
+                            exp.append(seed_id_1)
+                            self.export_data[index-1].append(exp)
                             break
                     if found == True:
                         break
@@ -417,6 +425,13 @@ class Multitargeting(QtWidgets.QMainWindow):
                     self.bar_data[r].append(line)
                     self.bars[tuple(temp[1:4])]=line
                     self.bar_coords.append([temp]) #push x, y1, and y2 to this list
+
+                    exp = temp
+                    exp.append(loc_1)
+                    exp.append(seq_1)
+                    exp.append(seed_id_1)
+                    self.export_data.append([exp])
+
                     index+=1
                 ind += 1
                 num += 1
@@ -775,6 +790,51 @@ class Multitargeting(QtWidgets.QMainWindow):
         self.hide()
 
 
+    def export(self):
+        # for seed in self.parser.seeds.keys():
+        #     print(seed)
+        #     print(self.parser.repeats[seed])
+        seqLength = int(self.sq.endo_info[self.endo_drop.currentText()][1])
+        groups = {}
+        for coord in self.export_data:
+            found = False
+            for key in groups.keys():
+                temp = []
+                for obj in groups[key]:
+                    for line in obj:
+                        temp.append(line[4])
+                ma = max(temp)
+                mi = min(temp)
+                if coord[0][4] - mi < 700 or ma - coord[0][4] < 700 or coord[0][1] == key:
+                    groups[key].append(coord)
+                    found = True
+                    break
+            if found == False:
+                groups[coord[0][1]] = []
+                groups[coord[0][1]].append(coord)
+
+
+
+
+        with open('export_chromo_data.csv','w') as f:
+            i = 1
+            for key in groups.keys():
+                seed_data = {}
+                for obj in groups[key]:
+                    for line in obj:
+                        seed = str(self.sq.decompress64(line[6], slength=seqLength, toseq=True))
+                        if line[5] not in seed_data:
+                            seed_data[line[5]] = {}
+                        if (line[4],seed) not in seed_data[line[5]]:
+                            seed_data[line[5]][(line[4],seed)] = 1
+                        else:
+                            seed_data[line[5]][(line[4],seed)] += 1
+                print(seed_data)
+                print('\n\n')
+                for seq in seed_data:
+                    for loc in seed_data[seq]:
+                        f.write('Group ' + str(i) + ',' + str(loc[0]) + ',' + str(seed_data[seq][loc]) + ',' + str(loc[1]) + '\n')
+                i += 1
 
 
 
@@ -877,7 +937,6 @@ class Multitargeting(QtWidgets.QMainWindow):
         }
         return switcher[i]
     # ----------------------------------------------------------#
-
     # this function calls the closingWindow class.
     def closeEvent(self, event):
         GlobalSettings.mainWindow.closeFunction()

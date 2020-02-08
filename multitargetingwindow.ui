@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1303</width>
-    <height>814</height>
+    <width>1356</width>
+    <height>815</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -480,13 +480,26 @@
      <string>Arrow Keys</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="export_button">
+    <property name="geometry">
+     <rect>
+      <x>1280</x>
+      <y>490</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Export</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1303</width>
+     <width>1356</width>
      <height>21</height>
     </rect>
    </property>
