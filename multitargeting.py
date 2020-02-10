@@ -791,9 +791,6 @@ class Multitargeting(QtWidgets.QMainWindow):
 
 
     def export(self):
-        # for seed in self.parser.seeds.keys():
-        #     print(seed)
-        #     print(self.parser.repeats[seed])
         seqLength = int(self.sq.endo_info[self.endo_drop.currentText()][1])
         groups = {}
         for coord in self.export_data:
@@ -805,13 +802,18 @@ class Multitargeting(QtWidgets.QMainWindow):
                         temp.append(line[4])
                 ma = max(temp)
                 mi = min(temp)
-                if coord[0][4] - mi < 700 or ma - coord[0][4] < 700 or coord[0][1] == key:
+                if coord[0][1] == key or (coord[0][4] <= ma + 700 and coord[0][4] >= mi - 700):
                     groups[key].append(coord)
                     found = True
                     break
             if found == False:
                 groups[coord[0][1]] = []
                 groups[coord[0][1]].append(coord)
+
+        for key in groups:
+            print(key)
+            print(groups[key])
+            print('\n\n')
 
 
 
@@ -829,8 +831,8 @@ class Multitargeting(QtWidgets.QMainWindow):
                             seed_data[line[5]][(line[4],seed)] = 1
                         else:
                             seed_data[line[5]][(line[4],seed)] += 1
-                print(seed_data)
-                print('\n\n')
+                # print(seed_data)
+                # print('\n\n')
                 for seq in seed_data:
                     for loc in seed_data[seq]:
                         f.write('Group ' + str(i) + ',' + str(loc[0]) + ',' + str(seed_data[seq][loc]) + ',' + str(loc[1]) + '\n')
